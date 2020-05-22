@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Common;
 
 namespace Server
 {
@@ -13,6 +14,7 @@ namespace Server
         private Socket listenSocket;
         private Socket clientSocket;
         private int id;
+        private ISerializer serializeHelper;
 
         public Dictionary<int, Socket> Connections { get; private set; }
 
@@ -40,6 +42,7 @@ namespace Server
             Port = port;
             id = 0;
             Connections = new Dictionary<int, Socket>();
+            serializeHelper = new BinarySerializeHelper();
         }
 
         public void Stop()
@@ -54,6 +57,8 @@ namespace Server
             listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             listenSocket.Bind(endPoint);
             listenSocket.Listen(MAX_CONNECTIONS_AMOUNT);
+            var threadUDP = new Thread(ListenBroadcast);
+            threadUDP.Start();
             Console.WriteLine("Сервер запущен. Ожидание подключений...");
 
             while(true)
@@ -96,6 +101,31 @@ namespace Server
                     SendMessage(clientInfo.ID.ToString() + ": " + sb.ToString() + " - " + DateTime.Now.ToShortTimeString());
                 }
             }
+        }
+
+        private void ListenBroadcast()
+        {
+            var listener = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            listener.EnableBroadcast = true;
+            var localEndPoint = new IPEndPoint(IPAddress.Any, Port);
+            listener.Bind(localEndPoint);
+            EndPoint endPoint = localEndPoint;
+
+            while(true)
+            {
+                byte[] data = new byte[1024];
+                int bytes = listener.ReceiveFrom(data, ref endPoint);
+                NodeInfo clientInfo = serializeHelper.Deserialize(data) as NodeInfo;
+                HandleClientSearchRequest(clientInfo);
+            }
+        }
+
+        private void HandleClientSearchRequest(NodeInfo clientInfo)
+        {
+            var serverInfo = new NodeInfo(Port, GetIP());
+            var clientConnection = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            var clientEndPoint = new IPEndPoint(clientInfo.IP, clientInfo.Port);
+            clientConnection.SendTo(serializeHelper.Serialize(serverInfo), clientEndPoint);
         }
 
         public void SendMessage(string message)
