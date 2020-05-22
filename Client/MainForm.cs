@@ -73,6 +73,7 @@ namespace Client
             tbMessage.Clear();
             bFindServer.Enabled = true;
             bSend.Enabled = false;
+            bDisconnect.Enabled = false;
             tbMessage.Enabled = false;
         }
 

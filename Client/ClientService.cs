@@ -108,6 +108,7 @@ namespace Client
 
         public void Stop()
         {
+            SendDisconnectionMessage();
             thread.Abort();
             thread.Join(100);
             Chat.Clear();
@@ -130,6 +131,13 @@ namespace Client
         {
             var package = new MessagePackage(UserName);
             package.IsForConnection = true;
+            SendMessage(package);
+        }
+
+        private void SendDisconnectionMessage()
+        {
+            var package = new MessagePackage(UserName);
+            package.IsForDisconnection = true;
             SendMessage(package);
         }
     }

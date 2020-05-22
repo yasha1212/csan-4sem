@@ -13,6 +13,8 @@ namespace Common
 
         public bool IsForConnection { get; set; }
 
+        public bool IsForDisconnection { get; set; }
+
         public string SenderName { get; set; }
 
         public int ReceiverID { get; set; }
@@ -21,6 +23,7 @@ namespace Common
         {
             IsForConnection = false;
             IsToAll = false;
+            IsForDisconnection = false;
             Message = "";
             SenderName = "";
             ReceiverID = 0;

@@ -72,13 +72,7 @@ namespace Server
                         byte[] data = new byte[1024];
                         int bytes = clientInfo.Client.Receive(data);
                         package = serializeHelper.Deserialize(data) as MessagePackage;
-
-                        if (package.IsForConnection)
-                        {
-                            ConnectNameAndID(clientInfo.ID, package.SenderName);
-                            Console.WriteLine("Пользователь соединения " + clientInfo.ID.ToString() + " теперь известен как " + package.SenderName);
-                            SendMessage("К вам присоединился пользователь " + package.SenderName + ". Добро пожаловать!");  
-                        }
+                        HandlePackage(package, clientInfo);
                     }
                     catch
                     {
@@ -92,6 +86,26 @@ namespace Server
                 {
                     SendMessage("[" + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
                 }
+            }
+            clientInfo.Client.Close();
+        }
+
+        private void HandlePackage(MessagePackage package, Connection connectionInfo)
+        {
+            if (package.IsForConnection)
+            {
+                ConnectNameAndID(connectionInfo.ID, package.SenderName);
+                Console.WriteLine("Пользователь соединения " + connectionInfo.ID.ToString() + " теперь известен как " + package.SenderName);
+                SendMessage("К вам присоединился пользователь " + package.SenderName + ". Добро пожаловать!");
+            }
+
+            if (package.IsForDisconnection)
+            {
+                UserNames.Remove(connectionInfo.ID);
+                Console.WriteLine("Пользователь " + connectionInfo.ID.ToString() + " (" + package.SenderName + ") отсоединился");
+                SendMessage("Пользователь " + package.SenderName + " вышел из чата.");
+                Connections[connectionInfo.ID].Shutdown(SocketShutdown.Both);
+                Connections.Remove(connectionInfo.ID);
             }
         }
 
