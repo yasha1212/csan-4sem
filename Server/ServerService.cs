@@ -77,7 +77,7 @@ namespace Server
                         {
                             ConnectNameAndID(clientInfo.ID, package.SenderName);
                             Console.WriteLine("Пользователь соединения " + clientInfo.ID.ToString() + " теперь известен как " + package.SenderName);
-                            SendMessage("К вам присоединился пользователь " + package.SenderName + ". Добро пожаловать!");
+                            SendMessage("К вам присоединился пользователь " + package.SenderName + ". Добро пожаловать!");  
                         }
                     }
                     catch
@@ -88,9 +88,9 @@ namespace Server
                 }
                 while (clientInfo.Client.Available > 0);
 
-                if(package?.Message.Length > 0)
+                if(package?.Message?.Length > 0)
                 {
-                    SendMessage(UserNames[clientInfo.ID] + " [" + DateTime.Now.ToShortTimeString() + "] : " + package.Message);
+                    SendMessage("[" + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
                 }
             }
         }

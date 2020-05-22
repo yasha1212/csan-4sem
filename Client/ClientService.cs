@@ -76,7 +76,14 @@ namespace Client
 
         public void SendMessage(string message)
         {
-            clientSocket.Send(Encoding.Unicode.GetBytes(message));
+            var package = new MessagePackage(message, UserName);
+            clientSocket.Send(serializeHelper.Serialize(package));
+            UpdateInterface?.Invoke();
+        }
+
+        private void SendMessage(MessagePackage package)
+        {
+            clientSocket.Send(serializeHelper.Serialize(package));
             UpdateInterface?.Invoke();
         }
 
@@ -114,8 +121,16 @@ namespace Client
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var remotePoint = new IPEndPoint(ServerIP, ServerPort);
             clientSocket.Connect(remotePoint);
+            SendConnectionMessage();
             thread = new Thread(ReceiveMessage);
             thread.Start();
+        }
+
+        private void SendConnectionMessage()
+        {
+            var package = new MessagePackage(UserName);
+            package.IsForConnection = true;
+            SendMessage(package);
         }
     }
 }

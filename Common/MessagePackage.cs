@@ -21,6 +21,14 @@ namespace Common
         {
             IsForConnection = false;
             IsToAll = false;
+            Message = "";
+            SenderName = "";
+            ReceiverID = 0;
+        }
+
+        public MessagePackage(string senderName) : base()
+        {
+            SenderName = senderName;
         }
 
         public MessagePackage(string message, string senderName) : base()

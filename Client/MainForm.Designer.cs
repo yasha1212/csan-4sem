@@ -87,6 +87,7 @@
             // 
             this.lbChat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lbChat.FormattingEnabled = true;
+            this.lbChat.HorizontalScrollbar = true;
             this.lbChat.ItemHeight = 20;
             this.lbChat.Location = new System.Drawing.Point(12, 12);
             this.lbChat.Name = "lbChat";
