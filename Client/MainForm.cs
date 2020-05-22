@@ -25,17 +25,19 @@ namespace Client
         public void UpdateChatInvoker()
         {
             Action action = UpdateChat;
+            action += UpdateServer;
             Invoke(action);
         }
 
         private void bSend_Click(object sender, EventArgs e)
         {
             client.SendMessage(tbMessage.Text);
+            tbMessage.Clear();
         }
 
         private void bConnect_Click(object sender, EventArgs e)
         {
-            client.Start(IPAddress.Parse("169.254.70.139"), 8005);
+            client.Start();
         }
 
         private void UpdateChat()
@@ -48,9 +50,23 @@ namespace Client
             }
         }
 
+        private void UpdateServer()
+        {
+            tbAdress.Text = client.ServerIP.ToString();
+            tbPort.Text = client.ServerPort.ToString();
+        }
+
         private void bDisconnect_Click(object sender, EventArgs e)
         {
             client.Stop();
+            tbAdress.Clear();
+            tbPort.Clear();
+            tbMessage.Clear();
+        }
+
+        private void bFindServer_Click(object sender, EventArgs e)
+        {
+            client.BroadcastRequest();
         }
     }
 }

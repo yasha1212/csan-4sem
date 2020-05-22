@@ -20,23 +20,6 @@ namespace Server
 
         public int Port { get; private set; }
 
-        private IPAddress GetIP()
-        {
-            var adresses = Dns.GetHostAddresses(Dns.GetHostName());
-            IPAddress currentAdress = null;
-
-            foreach(var adress in adresses)
-            {
-                if(adress.GetAddressBytes().Length == 4)
-                {
-                    currentAdress = adress;
-                    break;
-                }
-            }
-
-            return currentAdress;
-        }
-
         public ServerService(int port)
         {
             Port = port;
@@ -52,8 +35,8 @@ namespace Server
 
         public void Start()
         {
-            var endPoint = new IPEndPoint(GetIP(), Port);
-            Console.WriteLine(GetIP().ToString());
+            var endPoint = new IPEndPoint(NodeInfo.GetIP(), Port);
+            Console.WriteLine(NodeInfo.GetIP().ToString());
             listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             listenSocket.Bind(endPoint);
             listenSocket.Listen(MAX_CONNECTIONS_AMOUNT);
@@ -122,9 +105,9 @@ namespace Server
 
         private void HandleClientSearchRequest(NodeInfo clientInfo)
         {
-            var serverInfo = new NodeInfo(Port, GetIP());
+            var serverInfo = new NodeInfo(Port, NodeInfo.GetIP().ToString());
             var clientConnection = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            var clientEndPoint = new IPEndPoint(clientInfo.IP, clientInfo.Port);
+            var clientEndPoint = new IPEndPoint(IPAddress.Parse(clientInfo.IP), clientInfo.Port);
             clientConnection.SendTo(serializeHelper.Serialize(serverInfo), clientEndPoint);
         }
 

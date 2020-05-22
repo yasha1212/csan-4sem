@@ -33,6 +33,9 @@
             this.bConnect = new System.Windows.Forms.Button();
             this.bDisconnect = new System.Windows.Forms.Button();
             this.lbChat = new System.Windows.Forms.ListBox();
+            this.tbAdress = new System.Windows.Forms.TextBox();
+            this.tbPort = new System.Windows.Forms.TextBox();
+            this.bFindServer = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbMessage
@@ -54,9 +57,9 @@
             // 
             // bConnect
             // 
-            this.bConnect.Location = new System.Drawing.Point(599, 57);
+            this.bConnect.Location = new System.Drawing.Point(518, 207);
             this.bConnect.Name = "bConnect";
-            this.bConnect.Size = new System.Drawing.Size(108, 23);
+            this.bConnect.Size = new System.Drawing.Size(106, 32);
             this.bConnect.TabIndex = 2;
             this.bConnect.Text = "Connect";
             this.bConnect.UseVisualStyleBackColor = true;
@@ -64,9 +67,9 @@
             // 
             // bDisconnect
             // 
-            this.bDisconnect.Location = new System.Drawing.Point(599, 86);
+            this.bDisconnect.Location = new System.Drawing.Point(630, 207);
             this.bDisconnect.Name = "bDisconnect";
-            this.bDisconnect.Size = new System.Drawing.Size(108, 23);
+            this.bDisconnect.Size = new System.Drawing.Size(106, 32);
             this.bDisconnect.TabIndex = 3;
             this.bDisconnect.Text = "Disconnect";
             this.bDisconnect.UseVisualStyleBackColor = true;
@@ -82,11 +85,40 @@
             this.lbChat.Size = new System.Drawing.Size(424, 324);
             this.lbChat.TabIndex = 4;
             // 
+            // tbAdress
+            // 
+            this.tbAdress.Location = new System.Drawing.Point(518, 170);
+            this.tbAdress.Name = "tbAdress";
+            this.tbAdress.ReadOnly = true;
+            this.tbAdress.Size = new System.Drawing.Size(106, 22);
+            this.tbAdress.TabIndex = 5;
+            // 
+            // tbPort
+            // 
+            this.tbPort.Location = new System.Drawing.Point(630, 170);
+            this.tbPort.Name = "tbPort";
+            this.tbPort.ReadOnly = true;
+            this.tbPort.Size = new System.Drawing.Size(106, 22);
+            this.tbPort.TabIndex = 6;
+            // 
+            // bFindServer
+            // 
+            this.bFindServer.Location = new System.Drawing.Point(518, 116);
+            this.bFindServer.Name = "bFindServer";
+            this.bFindServer.Size = new System.Drawing.Size(218, 34);
+            this.bFindServer.TabIndex = 7;
+            this.bFindServer.Text = "Find Server";
+            this.bFindServer.UseVisualStyleBackColor = true;
+            this.bFindServer.Click += new System.EventHandler(this.bFindServer_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.bFindServer);
+            this.Controls.Add(this.tbPort);
+            this.Controls.Add(this.tbAdress);
             this.Controls.Add(this.lbChat);
             this.Controls.Add(this.bDisconnect);
             this.Controls.Add(this.bConnect);
@@ -107,6 +139,9 @@
         private System.Windows.Forms.Button bConnect;
         private System.Windows.Forms.Button bDisconnect;
         private System.Windows.Forms.ListBox lbChat;
+        private System.Windows.Forms.TextBox tbAdress;
+        private System.Windows.Forms.TextBox tbPort;
+        private System.Windows.Forms.Button bFindServer;
     }
 }
 
