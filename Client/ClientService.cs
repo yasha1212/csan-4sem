@@ -20,6 +20,8 @@ namespace Client
         public event HandleEvent UpdateInterface;
         private Thread thread, threadUDP;
 
+        public string UserName { get; set; }
+
         public List<string> Chat { get; private set; }
 
         public int ServerPort { get; private set; }

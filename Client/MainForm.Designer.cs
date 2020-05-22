@@ -36,20 +36,26 @@
             this.tbAdress = new System.Windows.Forms.TextBox();
             this.tbPort = new System.Windows.Forms.TextBox();
             this.bFindServer = new System.Windows.Forms.Button();
+            this.tbUserName = new System.Windows.Forms.TextBox();
+            this.laUserName = new System.Windows.Forms.Label();
+            this.bAcceptName = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbMessage
             // 
-            this.tbMessage.Location = new System.Drawing.Point(54, 386);
+            this.tbMessage.Enabled = false;
+            this.tbMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbMessage.Location = new System.Drawing.Point(12, 406);
             this.tbMessage.Name = "tbMessage";
-            this.tbMessage.Size = new System.Drawing.Size(326, 22);
+            this.tbMessage.Size = new System.Drawing.Size(337, 28);
             this.tbMessage.TabIndex = 0;
             // 
             // bSend
             // 
-            this.bSend.Location = new System.Drawing.Point(386, 387);
+            this.bSend.Enabled = false;
+            this.bSend.Location = new System.Drawing.Point(355, 405);
             this.bSend.Name = "bSend";
-            this.bSend.Size = new System.Drawing.Size(92, 23);
+            this.bSend.Size = new System.Drawing.Size(123, 29);
             this.bSend.TabIndex = 1;
             this.bSend.Text = "Send";
             this.bSend.UseVisualStyleBackColor = true;
@@ -57,9 +63,10 @@
             // 
             // bConnect
             // 
-            this.bConnect.Location = new System.Drawing.Point(518, 207);
+            this.bConnect.Enabled = false;
+            this.bConnect.Location = new System.Drawing.Point(484, 86);
             this.bConnect.Name = "bConnect";
-            this.bConnect.Size = new System.Drawing.Size(106, 32);
+            this.bConnect.Size = new System.Drawing.Size(149, 32);
             this.bConnect.TabIndex = 2;
             this.bConnect.Text = "Connect";
             this.bConnect.UseVisualStyleBackColor = true;
@@ -67,9 +74,10 @@
             // 
             // bDisconnect
             // 
-            this.bDisconnect.Location = new System.Drawing.Point(630, 207);
+            this.bDisconnect.Enabled = false;
+            this.bDisconnect.Location = new System.Drawing.Point(639, 86);
             this.bDisconnect.Name = "bDisconnect";
-            this.bDisconnect.Size = new System.Drawing.Size(106, 32);
+            this.bDisconnect.Size = new System.Drawing.Size(149, 32);
             this.bDisconnect.TabIndex = 3;
             this.bDisconnect.Text = "Disconnect";
             this.bDisconnect.UseVisualStyleBackColor = true;
@@ -77,45 +85,81 @@
             // 
             // lbChat
             // 
+            this.lbChat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lbChat.FormattingEnabled = true;
-            this.lbChat.ItemHeight = 16;
-            this.lbChat.Location = new System.Drawing.Point(54, 57);
+            this.lbChat.ItemHeight = 20;
+            this.lbChat.Location = new System.Drawing.Point(12, 12);
             this.lbChat.Name = "lbChat";
             this.lbChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.lbChat.Size = new System.Drawing.Size(424, 324);
+            this.lbChat.Size = new System.Drawing.Size(466, 384);
             this.lbChat.TabIndex = 4;
             // 
             // tbAdress
             // 
-            this.tbAdress.Location = new System.Drawing.Point(518, 170);
+            this.tbAdress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbAdress.Location = new System.Drawing.Point(484, 52);
             this.tbAdress.Name = "tbAdress";
             this.tbAdress.ReadOnly = true;
-            this.tbAdress.Size = new System.Drawing.Size(106, 22);
+            this.tbAdress.Size = new System.Drawing.Size(194, 28);
             this.tbAdress.TabIndex = 5;
             // 
             // tbPort
             // 
-            this.tbPort.Location = new System.Drawing.Point(630, 170);
+            this.tbPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbPort.Location = new System.Drawing.Point(684, 52);
             this.tbPort.Name = "tbPort";
             this.tbPort.ReadOnly = true;
-            this.tbPort.Size = new System.Drawing.Size(106, 22);
+            this.tbPort.Size = new System.Drawing.Size(104, 28);
             this.tbPort.TabIndex = 6;
             // 
             // bFindServer
             // 
-            this.bFindServer.Location = new System.Drawing.Point(518, 116);
+            this.bFindServer.Location = new System.Drawing.Point(484, 12);
             this.bFindServer.Name = "bFindServer";
-            this.bFindServer.Size = new System.Drawing.Size(218, 34);
+            this.bFindServer.Size = new System.Drawing.Size(304, 34);
             this.bFindServer.TabIndex = 7;
             this.bFindServer.Text = "Find Server";
             this.bFindServer.UseVisualStyleBackColor = true;
             this.bFindServer.Click += new System.EventHandler(this.bFindServer_Click);
+            // 
+            // tbUserName
+            // 
+            this.tbUserName.Enabled = false;
+            this.tbUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbUserName.Location = new System.Drawing.Point(484, 145);
+            this.tbUserName.Name = "tbUserName";
+            this.tbUserName.Size = new System.Drawing.Size(194, 28);
+            this.tbUserName.TabIndex = 8;
+            // 
+            // laUserName
+            // 
+            this.laUserName.AutoSize = true;
+            this.laUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.laUserName.Location = new System.Drawing.Point(684, 150);
+            this.laUserName.Name = "laUserName";
+            this.laUserName.Size = new System.Drawing.Size(94, 20);
+            this.laUserName.TabIndex = 9;
+            this.laUserName.Text = "User Name";
+            // 
+            // bAcceptName
+            // 
+            this.bAcceptName.Enabled = false;
+            this.bAcceptName.Location = new System.Drawing.Point(484, 179);
+            this.bAcceptName.Name = "bAcceptName";
+            this.bAcceptName.Size = new System.Drawing.Size(304, 32);
+            this.bAcceptName.TabIndex = 10;
+            this.bAcceptName.Text = "Accept";
+            this.bAcceptName.UseVisualStyleBackColor = true;
+            this.bAcceptName.Click += new System.EventHandler(this.bAcceptName_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.bAcceptName);
+            this.Controls.Add(this.laUserName);
+            this.Controls.Add(this.tbUserName);
             this.Controls.Add(this.bFindServer);
             this.Controls.Add(this.tbPort);
             this.Controls.Add(this.tbAdress);
@@ -142,6 +186,9 @@
         private System.Windows.Forms.TextBox tbAdress;
         private System.Windows.Forms.TextBox tbPort;
         private System.Windows.Forms.Button bFindServer;
+        private System.Windows.Forms.TextBox tbUserName;
+        private System.Windows.Forms.Label laUserName;
+        private System.Windows.Forms.Button bAcceptName;
     }
 }
 
