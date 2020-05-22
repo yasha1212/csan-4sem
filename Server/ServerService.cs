@@ -18,6 +18,8 @@ namespace Server
 
         public Dictionary<int, Socket> Connections { get; private set; }
 
+        public Dictionary<int, string> UserNames { get; private set; }
+
         public int Port { get; private set; }
 
         public ServerService(int port)
@@ -25,6 +27,7 @@ namespace Server
             Port = port;
             id = 0;
             Connections = new Dictionary<int, Socket>();
+            UserNames = new Dictionary<int, string>();
             serializeHelper = new BinarySerializeHelper();
         }
 
@@ -60,16 +63,22 @@ namespace Server
 
             while(clientInfo.Client.Connected)
             {
-                var sb = new StringBuilder();
-                int bytes = 0;
-                byte[] data = new byte[256];
+                MessagePackage package = null;
 
                 do
                 {
                     try
                     {
-                        bytes = clientInfo.Client.Receive(data);
-                        sb.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                        byte[] data = new byte[1024];
+                        int bytes = clientInfo.Client.Receive(data);
+                        package = serializeHelper.Deserialize(data) as MessagePackage;
+
+                        if (package.IsForConnection)
+                        {
+                            ConnectNameAndID(clientInfo.ID, package.SenderName);
+                            Console.WriteLine("Пользователь соединения " + clientInfo.ID.ToString() + " теперь известен как " + package.SenderName);
+                            SendMessage("К вам присоединился пользователь " + package.SenderName + ". Добро пожаловать!");
+                        }
                     }
                     catch
                     {
@@ -79,11 +88,32 @@ namespace Server
                 }
                 while (clientInfo.Client.Available > 0);
 
-                if(sb.ToString().Length > 0)
+                if(package?.Message.Length > 0)
                 {
-                    SendMessage(clientInfo.ID.ToString() + ": " + sb.ToString() + " - " + DateTime.Now.ToShortTimeString());
+                    SendMessage(UserNames[clientInfo.ID] + " [" + DateTime.Now.ToShortTimeString() + "] : " + package.Message);
                 }
             }
+        }
+
+        private void ConnectNameAndID(int id, string name)
+        {
+            if(HasNoName(id))
+            {
+                UserNames.Add(id, name);
+            }
+            else
+            {
+                UserNames[id] = name;
+            }
+        }
+
+        private bool HasNoName(int id)
+        {
+            if(UserNames.ContainsKey(id))
+            {
+                return false;
+            }
+            return true;
         }
 
         private void ListenBroadcast()
