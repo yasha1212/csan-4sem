@@ -42,6 +42,8 @@
             this.cbUsers = new System.Windows.Forms.ComboBox();
             this.tbID = new System.Windows.Forms.TextBox();
             this.laUserID = new System.Windows.Forms.Label();
+            this.rbGlobal = new System.Windows.Forms.RadioButton();
+            this.rbPrivate = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // tbMessage
@@ -50,13 +52,13 @@
             this.tbMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbMessage.Location = new System.Drawing.Point(12, 406);
             this.tbMessage.Name = "tbMessage";
-            this.tbMessage.Size = new System.Drawing.Size(337, 28);
+            this.tbMessage.Size = new System.Drawing.Size(660, 28);
             this.tbMessage.TabIndex = 0;
             // 
             // bSend
             // 
             this.bSend.Enabled = false;
-            this.bSend.Location = new System.Drawing.Point(355, 405);
+            this.bSend.Location = new System.Drawing.Point(678, 406);
             this.bSend.Name = "bSend";
             this.bSend.Size = new System.Drawing.Size(123, 29);
             this.bSend.TabIndex = 1;
@@ -67,7 +69,7 @@
             // bConnect
             // 
             this.bConnect.Enabled = false;
-            this.bConnect.Location = new System.Drawing.Point(484, 86);
+            this.bConnect.Location = new System.Drawing.Point(807, 86);
             this.bConnect.Name = "bConnect";
             this.bConnect.Size = new System.Drawing.Size(149, 32);
             this.bConnect.TabIndex = 2;
@@ -78,7 +80,7 @@
             // bDisconnect
             // 
             this.bDisconnect.Enabled = false;
-            this.bDisconnect.Location = new System.Drawing.Point(639, 86);
+            this.bDisconnect.Location = new System.Drawing.Point(962, 86);
             this.bDisconnect.Name = "bDisconnect";
             this.bDisconnect.Size = new System.Drawing.Size(149, 32);
             this.bDisconnect.TabIndex = 3;
@@ -95,13 +97,13 @@
             this.lbChat.Location = new System.Drawing.Point(12, 12);
             this.lbChat.Name = "lbChat";
             this.lbChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.lbChat.Size = new System.Drawing.Size(466, 384);
+            this.lbChat.Size = new System.Drawing.Size(789, 384);
             this.lbChat.TabIndex = 4;
             // 
             // tbAdress
             // 
             this.tbAdress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbAdress.Location = new System.Drawing.Point(484, 52);
+            this.tbAdress.Location = new System.Drawing.Point(807, 52);
             this.tbAdress.Name = "tbAdress";
             this.tbAdress.ReadOnly = true;
             this.tbAdress.Size = new System.Drawing.Size(194, 28);
@@ -110,7 +112,7 @@
             // tbPort
             // 
             this.tbPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbPort.Location = new System.Drawing.Point(684, 52);
+            this.tbPort.Location = new System.Drawing.Point(1007, 52);
             this.tbPort.Name = "tbPort";
             this.tbPort.ReadOnly = true;
             this.tbPort.Size = new System.Drawing.Size(104, 28);
@@ -118,7 +120,7 @@
             // 
             // bFindServer
             // 
-            this.bFindServer.Location = new System.Drawing.Point(484, 12);
+            this.bFindServer.Location = new System.Drawing.Point(807, 12);
             this.bFindServer.Name = "bFindServer";
             this.bFindServer.Size = new System.Drawing.Size(304, 34);
             this.bFindServer.TabIndex = 7;
@@ -130,7 +132,7 @@
             // 
             this.tbUserName.Enabled = false;
             this.tbUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbUserName.Location = new System.Drawing.Point(484, 177);
+            this.tbUserName.Location = new System.Drawing.Point(807, 177);
             this.tbUserName.Name = "tbUserName";
             this.tbUserName.Size = new System.Drawing.Size(194, 28);
             this.tbUserName.TabIndex = 8;
@@ -139,7 +141,7 @@
             // 
             this.laUserName.AutoSize = true;
             this.laUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.laUserName.Location = new System.Drawing.Point(484, 154);
+            this.laUserName.Location = new System.Drawing.Point(807, 154);
             this.laUserName.Name = "laUserName";
             this.laUserName.Size = new System.Drawing.Size(94, 20);
             this.laUserName.TabIndex = 9;
@@ -148,7 +150,7 @@
             // bAcceptName
             // 
             this.bAcceptName.Enabled = false;
-            this.bAcceptName.Location = new System.Drawing.Point(484, 211);
+            this.bAcceptName.Location = new System.Drawing.Point(807, 211);
             this.bAcceptName.Name = "bAcceptName";
             this.bAcceptName.Size = new System.Drawing.Size(304, 32);
             this.bAcceptName.TabIndex = 10;
@@ -159,9 +161,10 @@
             // cbUsers
             // 
             this.cbUsers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbUsers.Enabled = false;
             this.cbUsers.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbUsers.FormattingEnabled = true;
-            this.cbUsers.Location = new System.Drawing.Point(484, 406);
+            this.cbUsers.Location = new System.Drawing.Point(807, 406);
             this.cbUsers.Name = "cbUsers";
             this.cbUsers.Size = new System.Drawing.Size(304, 28);
             this.cbUsers.TabIndex = 11;
@@ -170,7 +173,7 @@
             // 
             this.tbID.Enabled = false;
             this.tbID.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbID.Location = new System.Drawing.Point(684, 177);
+            this.tbID.Location = new System.Drawing.Point(1007, 177);
             this.tbID.Name = "tbID";
             this.tbID.ReadOnly = true;
             this.tbID.Size = new System.Drawing.Size(104, 28);
@@ -180,17 +183,47 @@
             // 
             this.laUserID.AutoSize = true;
             this.laUserID.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.laUserID.Location = new System.Drawing.Point(680, 154);
+            this.laUserID.Location = new System.Drawing.Point(1003, 154);
             this.laUserID.Name = "laUserID";
             this.laUserID.Size = new System.Drawing.Size(67, 20);
             this.laUserID.TabIndex = 13;
             this.laUserID.Text = "User ID";
             // 
+            // rbGlobal
+            // 
+            this.rbGlobal.AutoSize = true;
+            this.rbGlobal.Checked = true;
+            this.rbGlobal.Enabled = false;
+            this.rbGlobal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbGlobal.Location = new System.Drawing.Point(807, 311);
+            this.rbGlobal.Name = "rbGlobal";
+            this.rbGlobal.Size = new System.Drawing.Size(128, 28);
+            this.rbGlobal.TabIndex = 14;
+            this.rbGlobal.TabStop = true;
+            this.rbGlobal.Text = "Global Chat";
+            this.rbGlobal.UseVisualStyleBackColor = true;
+            this.rbGlobal.CheckedChanged += new System.EventHandler(this.rbGlobal_CheckedChanged);
+            // 
+            // rbPrivate
+            // 
+            this.rbPrivate.AutoSize = true;
+            this.rbPrivate.Enabled = false;
+            this.rbPrivate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPrivate.Location = new System.Drawing.Point(983, 311);
+            this.rbPrivate.Name = "rbPrivate";
+            this.rbPrivate.Size = new System.Drawing.Size(130, 28);
+            this.rbPrivate.TabIndex = 15;
+            this.rbPrivate.Text = "Private Chat";
+            this.rbPrivate.UseVisualStyleBackColor = true;
+            this.rbPrivate.CheckedChanged += new System.EventHandler(this.rbPrivate_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1123, 450);
+            this.Controls.Add(this.rbPrivate);
+            this.Controls.Add(this.rbGlobal);
             this.Controls.Add(this.laUserID);
             this.Controls.Add(this.tbID);
             this.Controls.Add(this.cbUsers);
@@ -229,6 +262,8 @@
         private System.Windows.Forms.ComboBox cbUsers;
         private System.Windows.Forms.TextBox tbID;
         private System.Windows.Forms.Label laUserID;
+        private System.Windows.Forms.RadioButton rbGlobal;
+        private System.Windows.Forms.RadioButton rbPrivate;
     }
 }
 

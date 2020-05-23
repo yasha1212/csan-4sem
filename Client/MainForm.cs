@@ -45,6 +45,8 @@ namespace Client
             tbID.Enabled = true;
             bSend.Enabled = true;
             bDisconnect.Enabled = true;
+            rbGlobal.Enabled = true;
+            rbPrivate.Enabled = true;
             bConnect.Enabled = false;
             bAcceptName.Enabled = false;
             tbUserName.ReadOnly = true;
@@ -90,6 +92,8 @@ namespace Client
             tbID.Clear();
             tbID.Enabled = false;
             tbUserName.Enabled = false;
+            rbPrivate.Enabled = false;
+            rbGlobal.Enabled = false;
             tbUserName.ReadOnly = false;
             bFindServer.Enabled = true;
             bSend.Enabled = false;
@@ -114,6 +118,19 @@ namespace Client
 
                 bConnect.Enabled = true;
             }
+        }
+
+        private void rbGlobal_CheckedChanged(object sender, EventArgs e)
+        {
+            cbUsers.Enabled = false;
+            bSend.Enabled = true;
+        }
+
+        private void rbPrivate_CheckedChanged(object sender, EventArgs e)
+        {
+            cbUsers.Enabled = true;
+            bSend.Enabled = false;
+
         }
     }
 }
