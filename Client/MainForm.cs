@@ -14,11 +14,16 @@ namespace Client
     public partial class MainForm : Form
     {
         private ClientService client;
+        private List<string> chat;
+        private int receiverID;
+        private bool isForAll;
 
         public MainForm()
         {
             InitializeComponent();
             client = new ClientService();
+            chat = client.GetGlobalChat();
+            isForAll = true;
             client.Subscribe(UpdateChatInvoker);
         }
 
@@ -32,7 +37,7 @@ namespace Client
 
         private void bSend_Click(object sender, EventArgs e)
         {
-            client.SendMessage(tbMessage.Text);
+            client.SendMessage(tbMessage.Text, isForAll, receiverID);
 
             tbMessage.Clear();
         }
@@ -56,7 +61,17 @@ namespace Client
         {
             lbChat.Items.Clear();
 
-            foreach (var message in client.GetGlobalChat())
+            if(isForAll)
+            {
+                chat = client.GetGlobalChat();
+            }
+            else
+            {
+                receiverID = IDParser.GetIDFromString(cbUsers.SelectedItem.ToString());
+                chat = client.Conversations[(client.UserID, receiverID)];
+            }
+
+            foreach (var message in chat)
             {
                 lbChat.Items.Add(message);
             }
@@ -70,14 +85,17 @@ namespace Client
 
         private void UpdateUsersList()
         {
-            cbUsers.Items.Clear();
-            tbID.Text = client.UserID.ToString();
-
-            foreach(var id in client.UserNames.Keys)
+            if (isForAll)
             {
-                if (id != client.UserID)
+                cbUsers.Items.Clear();
+                tbID.Text = client.UserID.ToString();
+
+                foreach (var id in client.UserNames.Keys)
                 {
-                    cbUsers.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")");
+                    if (id != client.UserID)
+                    {
+                        cbUsers.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")");
+                    }
                 }
             }
         }
@@ -124,13 +142,24 @@ namespace Client
         {
             cbUsers.Enabled = false;
             bSend.Enabled = true;
+            isForAll = true;
+            UpdateChat();
         }
 
         private void rbPrivate_CheckedChanged(object sender, EventArgs e)
         {
             cbUsers.Enabled = true;
             bSend.Enabled = false;
+            isForAll = false;
+        }
 
+        private void cbUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(cbUsers.SelectedIndex != -1)
+            {
+                bSend.Enabled = true;
+                UpdateChat();
+            }
         }
     }
 }

@@ -82,10 +82,10 @@ namespace Client
             UpdateInterface += handler;
         }
 
-        public void SendMessage(string message)
+        public void SendMessage(string message, bool isForAll, int receiverID)
         {
-            var package = new MessagePackage(message, UserName);
-            package.IsForAll = true;
+            var package = new MessagePackage(message, UserName, receiverID);
+            package.IsForAll = isForAll;
             clientSocket.Send(serializeHelper.Serialize(package));
             UpdateInterface?.Invoke();
         }
