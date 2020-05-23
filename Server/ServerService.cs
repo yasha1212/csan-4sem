@@ -84,9 +84,10 @@ namespace Server
 
                 if(package?.Message?.Length > 0)
                 {
-                    SendMessage("[" + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
+                    SendMessage("[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
                 }
             }
+
             clientInfo.Client.Close();
         }
 
