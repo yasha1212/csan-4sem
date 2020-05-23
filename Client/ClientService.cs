@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -22,7 +23,11 @@ namespace Client
 
         public string UserName { get; set; }
 
+        public int UserID { get; set; }
+
         public List<string> Chat { get; private set; }
+
+        public Dictionary<int, string> UserNames { get; private set; }
 
         public int ServerPort { get; private set; }
         
@@ -31,6 +36,7 @@ namespace Client
         public ClientService()
         {
             Chat = new List<string>();
+            UserNames = new Dictionary<int, string>();
             serializeHelper = new BinarySerializeHelper();
             SetUDPListener();
         }
@@ -91,19 +97,36 @@ namespace Client
         {
             while (clientSocket.Connected)
             {
-                var sb = new StringBuilder();
+                var stream = new MemoryStream();
 
                 do
                 {
-                    var data = new byte[256];
-                    int bytes = clientSocket.Receive(data, data.Length, 0);
-                    sb.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    var data = new byte[1024];
+                    int bytes = clientSocket.Receive(data);
+                    stream.Write(data, 0, bytes);
                 }
                 while (clientSocket.Available > 0);
 
-                Chat.Add(sb.ToString());
-                UpdateInterface?.Invoke();
+                object package = serializeHelper.Deserialize(stream.ToArray());
+                HandlePackage(package);
             }
+        }
+
+        private void HandlePackage(object data)
+        {
+            if (data as UsersListPackage != null)
+            {
+                var package = data as UsersListPackage;
+                UserNames = package.Users;
+                UserID = package.UserID;
+            }
+
+            if (data as string != null)
+            {
+                Chat.Add(data as string);
+            }
+
+            UpdateInterface?.Invoke();
         }
 
         public void Stop()

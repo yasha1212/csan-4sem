@@ -39,6 +39,9 @@
             this.tbUserName = new System.Windows.Forms.TextBox();
             this.laUserName = new System.Windows.Forms.Label();
             this.bAcceptName = new System.Windows.Forms.Button();
+            this.cbUsers = new System.Windows.Forms.ComboBox();
+            this.tbID = new System.Windows.Forms.TextBox();
+            this.laUserID = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tbMessage
@@ -127,7 +130,7 @@
             // 
             this.tbUserName.Enabled = false;
             this.tbUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbUserName.Location = new System.Drawing.Point(484, 145);
+            this.tbUserName.Location = new System.Drawing.Point(484, 177);
             this.tbUserName.Name = "tbUserName";
             this.tbUserName.Size = new System.Drawing.Size(194, 28);
             this.tbUserName.TabIndex = 8;
@@ -136,7 +139,7 @@
             // 
             this.laUserName.AutoSize = true;
             this.laUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.laUserName.Location = new System.Drawing.Point(684, 150);
+            this.laUserName.Location = new System.Drawing.Point(484, 154);
             this.laUserName.Name = "laUserName";
             this.laUserName.Size = new System.Drawing.Size(94, 20);
             this.laUserName.TabIndex = 9;
@@ -145,7 +148,7 @@
             // bAcceptName
             // 
             this.bAcceptName.Enabled = false;
-            this.bAcceptName.Location = new System.Drawing.Point(484, 179);
+            this.bAcceptName.Location = new System.Drawing.Point(484, 211);
             this.bAcceptName.Name = "bAcceptName";
             this.bAcceptName.Size = new System.Drawing.Size(304, 32);
             this.bAcceptName.TabIndex = 10;
@@ -153,11 +156,44 @@
             this.bAcceptName.UseVisualStyleBackColor = true;
             this.bAcceptName.Click += new System.EventHandler(this.bAcceptName_Click);
             // 
+            // cbUsers
+            // 
+            this.cbUsers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbUsers.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbUsers.FormattingEnabled = true;
+            this.cbUsers.Location = new System.Drawing.Point(484, 406);
+            this.cbUsers.Name = "cbUsers";
+            this.cbUsers.Size = new System.Drawing.Size(304, 28);
+            this.cbUsers.TabIndex = 11;
+            // 
+            // tbID
+            // 
+            this.tbID.Enabled = false;
+            this.tbID.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbID.Location = new System.Drawing.Point(684, 177);
+            this.tbID.Name = "tbID";
+            this.tbID.ReadOnly = true;
+            this.tbID.Size = new System.Drawing.Size(104, 28);
+            this.tbID.TabIndex = 12;
+            // 
+            // laUserID
+            // 
+            this.laUserID.AutoSize = true;
+            this.laUserID.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.laUserID.Location = new System.Drawing.Point(680, 154);
+            this.laUserID.Name = "laUserID";
+            this.laUserID.Size = new System.Drawing.Size(67, 20);
+            this.laUserID.TabIndex = 13;
+            this.laUserID.Text = "User ID";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.laUserID);
+            this.Controls.Add(this.tbID);
+            this.Controls.Add(this.cbUsers);
             this.Controls.Add(this.bAcceptName);
             this.Controls.Add(this.laUserName);
             this.Controls.Add(this.tbUserName);
@@ -190,6 +226,9 @@
         private System.Windows.Forms.TextBox tbUserName;
         private System.Windows.Forms.Label laUserName;
         private System.Windows.Forms.Button bAcceptName;
+        private System.Windows.Forms.ComboBox cbUsers;
+        private System.Windows.Forms.TextBox tbID;
+        private System.Windows.Forms.Label laUserID;
     }
 }
 

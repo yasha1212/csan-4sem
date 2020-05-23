@@ -77,7 +77,7 @@ namespace Server
                     catch
                     {
                         Console.WriteLine("Соединение " + clientInfo.ID.ToString() + " прервано.");
-                        Connections.Remove(clientInfo.ID);
+                        RemoveClient(UserNames[clientInfo.ID], clientInfo.ID);
                     }
                 }
                 while (clientInfo.Client.Available > 0);
@@ -95,19 +95,49 @@ namespace Server
         {
             if (package.IsForConnection)
             {
-                ConnectNameAndID(connectionInfo.ID, package.SenderName);
-                Console.WriteLine("Пользователь соединения " + connectionInfo.ID.ToString() + " теперь известен как " + package.SenderName);
-                SendMessage("К вам присоединился пользователь " + package.SenderName + ". Добро пожаловать!");
+                AddClient(package.SenderName, connectionInfo.ID);
             }
 
             if (package.IsForDisconnection)
             {
-                UserNames.Remove(connectionInfo.ID);
-                Console.WriteLine("Пользователь " + connectionInfo.ID.ToString() + " (" + package.SenderName + ") отсоединился");
-                SendMessage("Пользователь " + package.SenderName + " вышел из чата.");
-                Connections[connectionInfo.ID].Shutdown(SocketShutdown.Both);
-                Connections.Remove(connectionInfo.ID);
+                RemoveClient(package.SenderName, connectionInfo.ID);
             }
+        }
+
+        private void RemoveClient(string userName, int id)
+        {
+            UserNames.Remove(id);
+            SendUsersList();
+
+            Console.WriteLine("Пользователь " + id.ToString() + " (" + userName + ") отсоединился");
+
+            SendMessage("Пользователь " + userName + " вышел из чата.");
+            Connections[id].Shutdown(SocketShutdown.Both);
+            Connections.Remove(id);
+            DisplayCurrentUsers();
+        }
+
+        private void AddClient(string userName, int id)
+        {
+            ConnectNameAndID(id, userName);
+
+            Console.WriteLine("Пользователь соединения " + id.ToString() + " теперь известен как " + userName);
+
+            SendUsersList();
+            SendMessage("К вам присоединился пользователь " + userName + ". Добро пожаловать!");
+            DisplayCurrentUsers();
+        }
+
+        private void DisplayCurrentUsers()
+        {
+            Console.WriteLine();
+            Console.WriteLine("--------------------------------Active-----------------------------------");
+            foreach (var userID in UserNames.Keys)
+            {
+                Console.WriteLine(userID.ToString() + " - " + UserNames[userID]);
+            }
+            Console.WriteLine("-------------------------------------------------------------------------");
+            Console.WriteLine();
         }
 
         private void ConnectNameAndID(int id, string name)
@@ -156,11 +186,20 @@ namespace Server
             clientConnection.SendTo(serializeHelper.Serialize(serverInfo), clientEndPoint);
         }
 
-        public void SendMessage(string message)
+        private void SendMessage(string message)
         {
             foreach(var client in Connections.Values)
             {
-                client.Send(Encoding.Unicode.GetBytes(message));
+                client.Send(serializeHelper.Serialize(message));
+            }
+        }
+
+        private void SendUsersList()
+        {
+            foreach(var clientID in Connections.Keys)
+            {
+                var package = new UsersListPackage(clientID, UserNames);
+                Connections[clientID].Send(serializeHelper.Serialize(package));
             }
         }
     }

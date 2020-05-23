@@ -26,6 +26,7 @@ namespace Client
         {
             Action action = UpdateChat;
             action += UpdateServer;
+            action += UpdateUsersList;
             Invoke(action);
         }
 
@@ -41,11 +42,12 @@ namespace Client
             client.Start();
 
             tbMessage.Enabled = true;
+            tbID.Enabled = true;
             bSend.Enabled = true;
             bDisconnect.Enabled = true;
             bConnect.Enabled = false;
             bAcceptName.Enabled = false;
-            tbUserName.Enabled = false;
+            tbUserName.ReadOnly = true;
         }
 
         private void UpdateChat()
@@ -64,6 +66,20 @@ namespace Client
             tbPort.Text = client.ServerPort.ToString();
         }
 
+        private void UpdateUsersList()
+        {
+            cbUsers.Items.Clear();
+            tbID.Text = client.UserID.ToString();
+
+            foreach(var id in client.UserNames.Keys)
+            {
+                if (id != client.UserID)
+                {
+                    cbUsers.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")");
+                }
+            }
+        }
+
         private void bDisconnect_Click(object sender, EventArgs e)
         {
             client.Stop();
@@ -71,6 +87,10 @@ namespace Client
             tbAdress.Clear();
             tbPort.Clear();
             tbMessage.Clear();
+            tbID.Clear();
+            tbID.Enabled = false;
+            tbUserName.Enabled = false;
+            tbUserName.ReadOnly = false;
             bFindServer.Enabled = true;
             bSend.Enabled = false;
             bDisconnect.Enabled = false;
