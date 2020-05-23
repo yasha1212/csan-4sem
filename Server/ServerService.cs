@@ -8,15 +8,24 @@ using Common;
 
 namespace Server
 {
+    enum ServerMessageType
+    {
+        ClientConnection,
+        ClientDisconnection
+    }
+
     class ServerService
     {
         private const int MAX_CONNECTIONS_AMOUNT = 10;
+        private readonly (int, int) GLOBAL_CHAT = (-1, -1);
         private Socket listenSocket;
         private Socket clientSocket;
         private int id;
         private ISerializer serializeHelper;
 
         public Dictionary<int, Socket> Connections { get; private set; }
+
+        public Dictionary<(int, int), List<string>> Conversations { get; private set; }
 
         public Dictionary<int, string> UserNames { get; private set; }
 
@@ -27,6 +36,8 @@ namespace Server
             Port = port;
             id = 0;
             Connections = new Dictionary<int, Socket>();
+            Conversations = new Dictionary<(int, int), List<string>>();
+            Conversations[GLOBAL_CHAT] = new List<string>();
             UserNames = new Dictionary<int, string>();
             serializeHelper = new BinarySerializeHelper();
         }
@@ -84,11 +95,35 @@ namespace Server
 
                 if(package?.Message?.Length > 0)
                 {
-                    SendMessage("[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
+                    SendMessage(package, clientInfo.ID);
+                    //SendMessage("[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
                 }
             }
 
             clientInfo.Client.Close();
+        }
+
+        private void SendMessage(MessagePackage package, int senderID)
+        {
+            var message = "[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + UserNames[senderID] + ": " + package.Message;
+
+            if (package.IsForAll)
+            {
+                Conversations[GLOBAL_CHAT].Add(message);
+
+                /*foreach (var clientID in Connections.Keys)
+                {
+                    Connections[clientID].Send(serializeHelper.Serialize(package.Message));
+                    Conversations[(senderID, clientID)].Add(package.Message);
+                } */
+            }
+            else
+            {
+                Conversations[(senderID, package.ReceiverID)].Add(message);
+                Conversations[(package.ReceiverID, senderID)].Add(message);
+            }
+
+            NotifyClients();
         }
 
         private void HandlePackage(MessagePackage package, Connection connectionInfo)
@@ -104,14 +139,45 @@ namespace Server
             }
         }
 
+        private void NotifyClients()
+        {
+            foreach (var client in Connections.Values)
+            {
+                client.Send(serializeHelper.Serialize(Conversations));
+            }
+        }
+
+        private void SendServerMessage(ServerMessageType type, string userName)
+        {
+            if(type == ServerMessageType.ClientConnection)
+            {
+                Conversations[GLOBAL_CHAT].Add("К вам присоединился пользователь " + userName + ". Добро пожаловать!");
+            }
+            if(type == ServerMessageType.ClientDisconnection)
+            {
+                Conversations[GLOBAL_CHAT].Add("Пользователь " + userName + " вышел из чата.");
+                foreach(var conversation in Conversations.Values)
+                {
+                    conversation.Add("Пользователь " + userName + " вышел из чата.");
+                }
+            }
+
+            NotifyClients();
+        }
+
         private void RemoveClient(string userName, int id)
         {
             UserNames.Remove(id);
             SendUsersList();
-
             Console.WriteLine("Пользователь " + id.ToString() + " (" + userName + ") отсоединился");
 
-            SendMessage("Пользователь " + userName + " вышел из чата.");
+            foreach(var clientID in Connections.Keys)
+            {
+                Conversations.Remove((clientID, id));
+                Conversations.Remove((id, clientID));
+            }
+
+            SendServerMessage(ServerMessageType.ClientDisconnection, userName);
             Connections[id].Shutdown(SocketShutdown.Both);
             Connections.Remove(id);
             DisplayCurrentUsers();
@@ -120,11 +186,19 @@ namespace Server
         private void AddClient(string userName, int id)
         {
             ConnectNameAndID(id, userName);
-
             Console.WriteLine("Пользователь соединения " + id.ToString() + " теперь известен как " + userName);
-
             SendUsersList();
-            SendMessage("К вам присоединился пользователь " + userName + ". Добро пожаловать!");
+            
+            foreach(var clientID in Connections.Keys)
+            {
+                if (clientID != id)
+                {
+                    Conversations.Add((id, clientID), new List<string>());
+                    Conversations.Add((clientID, id), new List<string>());
+                }
+            }
+
+            SendServerMessage(ServerMessageType.ClientConnection, userName);
             DisplayCurrentUsers();
         }
 
@@ -184,14 +258,6 @@ namespace Server
             var clientConnection = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             var clientEndPoint = new IPEndPoint(IPAddress.Parse(clientInfo.IP), clientInfo.Port);
             clientConnection.SendTo(serializeHelper.Serialize(serverInfo), clientEndPoint);
-        }
-
-        private void SendMessage(string message)
-        {
-            foreach(var client in Connections.Values)
-            {
-                client.Send(serializeHelper.Serialize(message));
-            }
         }
 
         private void SendUsersList()

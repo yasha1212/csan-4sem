@@ -14,6 +14,7 @@ namespace Client
     class ClientService
     {
         private const string broadcastIPAdress = "169.254.70.139";
+        private readonly (int, int) GLOBAL_CHAT = (-1, -1);
         private Socket clientSocket;
         private Socket listenerUDP;
         private ISerializer serializeHelper;
@@ -25,9 +26,9 @@ namespace Client
 
         public int UserID { get; set; }
 
-        public List<string> Chat { get; private set; }
-
         public Dictionary<int, string> UserNames { get; private set; }
+
+        public Dictionary<(int, int), List<string>> Conversations { get; private set; }
 
         public int ServerPort { get; private set; }
         
@@ -35,7 +36,8 @@ namespace Client
 
         public ClientService()
         {
-            Chat = new List<string>();
+            Conversations = new Dictionary<(int, int), List<string>>();
+            Conversations[GLOBAL_CHAT] = new List<string>();
             UserNames = new Dictionary<int, string>();
             serializeHelper = new BinarySerializeHelper();
             SetUDPListener();
@@ -83,6 +85,7 @@ namespace Client
         public void SendMessage(string message)
         {
             var package = new MessagePackage(message, UserName);
+            package.IsForAll = true;
             clientSocket.Send(serializeHelper.Serialize(package));
             UpdateInterface?.Invoke();
         }
@@ -121,9 +124,9 @@ namespace Client
                 UserID = package.UserID;
             }
 
-            if (data as string != null)
+            if (data as Dictionary<(int, int), List<string>> != null)
             {
-                Chat.Add(data as string);
+                Conversations = data as Dictionary<(int, int), List<string>>;
             }
 
             UpdateInterface?.Invoke();
@@ -134,7 +137,8 @@ namespace Client
             SendDisconnectionMessage();
             thread.Abort();
             thread.Join(100);
-            Chat.Clear();
+            Conversations.Clear();
+            UserNames.Clear();
             UpdateInterface?.Invoke();
             clientSocket.Shutdown(SocketShutdown.Both);
             clientSocket.Close();
@@ -162,6 +166,11 @@ namespace Client
             var package = new MessagePackage(UserName);
             package.IsForDisconnection = true;
             SendMessage(package);
+        }
+
+        public List<String> GetGlobalChat()
+        {
+            return Conversations[GLOBAL_CHAT];
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Client
         {
             lbChat.Items.Clear();
 
-            foreach (var message in client.Chat)
+            foreach (var message in client.GetGlobalChat())
             {
                 lbChat.Items.Add(message);
             }

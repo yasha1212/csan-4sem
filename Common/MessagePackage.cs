@@ -9,7 +9,7 @@ namespace Common
     {
         public string Message { get; set; }
 
-        public bool IsToAll { get; set; }
+        public bool IsForAll { get; set; }
 
         public bool IsForConnection { get; set; }
 
@@ -22,7 +22,7 @@ namespace Common
         public MessagePackage()
         {
             IsForConnection = false;
-            IsToAll = false;
+            IsForAll = false;
             IsForDisconnection = false;
             Message = "";
             SenderName = "";
