@@ -96,7 +96,6 @@ namespace Server
                 if(package?.Message?.Length > 0)
                 {
                     SendMessage(package, clientInfo.ID);
-                    //SendMessage("[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + UserNames[clientInfo.ID] + ": " + package.Message);
                 }
             }
 
@@ -110,12 +109,6 @@ namespace Server
             if (package.IsForAll)
             {
                 Conversations[GLOBAL_CHAT].Add(message);
-
-                /*foreach (var clientID in Connections.Keys)
-                {
-                    Connections[clientID].Send(serializeHelper.Serialize(package.Message));
-                    Conversations[(senderID, clientID)].Add(package.Message);
-                } */
             }
             else
             {
@@ -158,7 +151,10 @@ namespace Server
                 Conversations[GLOBAL_CHAT].Add("Пользователь " + userName + " вышел из чата.");
                 foreach(var conversation in Conversations.Values)
                 {
-                    conversation.Add("Пользователь " + userName + " вышел из чата.");
+                    if (conversation != Conversations[GLOBAL_CHAT])
+                    {
+                        conversation.Add("Пользователь " + userName + " вышел из чата.");
+                    }
                 }
             }
 

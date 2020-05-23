@@ -138,6 +138,7 @@ namespace Client
             thread.Abort();
             thread.Join(100);
             Conversations.Clear();
+            Conversations.Add(GLOBAL_CHAT, new List<string>());
             UserNames.Clear();
             UpdateInterface?.Invoke();
             clientSocket.Shutdown(SocketShutdown.Both);
