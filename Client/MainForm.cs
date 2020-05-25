@@ -15,7 +15,7 @@ namespace Client
     {
         private ClientService client;
         private List<string> chat;
-        private int receiverID;
+        private int receiverID = -1;
         private bool isForAll;
 
         public MainForm()
@@ -38,7 +38,6 @@ namespace Client
         private void bSend_Click(object sender, EventArgs e)
         {
             client.SendMessage(tbMessage.Text, isForAll, receiverID);
-
             tbMessage.Clear();
         }
 
@@ -67,14 +66,22 @@ namespace Client
             }
             else
             {
-                receiverID = IDParser.GetIDFromString(cbUsers.SelectedItem.ToString());
-                chat = client.Conversations[(client.UserID, receiverID)];
+                try
+                {
+                    chat = client.Conversations[(client.UserID, receiverID)];
+                }
+                catch
+                {
+                    chat = client.GetGlobalChat();
+                    rbGlobal.Checked = true;
+                }
             }
 
             foreach (var message in chat)
             {
                 lbChat.Items.Add(message);
             }
+            lbChat.TopIndex = lbChat.Items.Count - 1; // проверить работу
         }
 
         private void UpdateServer()
@@ -85,16 +92,17 @@ namespace Client
 
         private void UpdateUsersList()
         {
-            if (isForAll)
-            {
-                cbUsers.Items.Clear();
-                tbID.Text = client.UserID.ToString();
+            cbUsers.Items.Clear();
+            tbID.Text = client.UserID.ToString();
 
-                foreach (var id in client.UserNames.Keys)
+            foreach (var id in client.UserNames.Keys)
+            {
+                if (id != client.UserID)
                 {
-                    if (id != client.UserID)
+                    cbUsers.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")");
+                    if (client.UserNames.ContainsKey(receiverID))
                     {
-                        cbUsers.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")");
+                        cbUsers.SelectedItem = client.UserNames[receiverID] + "(" + receiverID.ToString() + ")";
                     }
                 }
             }
@@ -102,6 +110,7 @@ namespace Client
 
         private void bDisconnect_Click(object sender, EventArgs e)
         {
+            isForAll = true;
             client.Stop();
 
             tbAdress.Clear();
@@ -157,8 +166,30 @@ namespace Client
         {
             if(cbUsers.SelectedIndex != -1)
             {
+                receiverID = IDExtractor.GetIDFromString(cbUsers.SelectedItem.ToString());
                 bSend.Enabled = true;
                 UpdateChat();
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                client.Stop();
+            }
+            catch
+            {
+                e.Cancel = false;
+            }
+        }
+
+        private void tbMessage_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                client.SendMessage(tbMessage.Text, isForAll, receiverID);
+                tbMessage.Clear();
             }
         }
     }

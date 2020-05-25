@@ -134,13 +134,11 @@ namespace Client
 
         public void Stop()
         {
-            SendDisconnectionMessage();
             thread.Abort();
             thread.Join(100);
             Conversations.Clear();
             Conversations.Add(GLOBAL_CHAT, new List<string>());
             UserNames.Clear();
-            UpdateInterface?.Invoke();
             clientSocket.Shutdown(SocketShutdown.Both);
             clientSocket.Close();
         }
@@ -159,13 +157,6 @@ namespace Client
         {
             var package = new MessagePackage(UserName);
             package.IsForConnection = true;
-            SendMessage(package);
-        }
-
-        private void SendDisconnectionMessage()
-        {
-            var package = new MessagePackage(UserName);
-            package.IsForDisconnection = true;
             SendMessage(package);
         }
 

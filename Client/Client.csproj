@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientService.cs" />
-    <Compile Include="IDParser.cs" />
+    <Compile Include="IDExtractor.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

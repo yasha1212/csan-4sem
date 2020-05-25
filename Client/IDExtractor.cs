@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Client
 {
-    public static class IDParser
+    public static class IDExtractor
     {
         public static int GetIDFromString(string cbItem)
         {

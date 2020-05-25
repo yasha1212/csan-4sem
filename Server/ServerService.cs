@@ -72,34 +72,35 @@ namespace Server
             var clientInfo = connection as Connection;
             Console.WriteLine("Соединение " + clientInfo.ID.ToString() + " установлено.");
 
-            while(clientInfo.Client.Connected)
+            while (clientInfo.Client.Connected)
             {
                 MessagePackage package = null;
 
-                do
+                try 
                 {
-                    try
+                    do
                     {
                         byte[] data = new byte[1024];
                         int bytes = clientInfo.Client.Receive(data);
                         package = serializeHelper.Deserialize(data) as MessagePackage;
                         HandlePackage(package, clientInfo);
                     }
-                    catch
+                    while (clientInfo.Client.Available > 0);
+
+                    if (package?.Message?.Length > 0)
                     {
-                        Console.WriteLine("Соединение " + clientInfo.ID.ToString() + " прервано.");
-                        RemoveClient(UserNames[clientInfo.ID], clientInfo.ID);
+                        SendMessage(package, clientInfo.ID);
                     }
                 }
-                while (clientInfo.Client.Available > 0);
-
-                if(package?.Message?.Length > 0)
+                catch
                 {
-                    SendMessage(package, clientInfo.ID);
+                    Console.WriteLine("Соединение " + clientInfo.ID.ToString() + " прервано.");
+                    clientInfo.Client.Shutdown(SocketShutdown.Both);
+                    clientInfo.Client.Close();
                 }
             }
 
-            clientInfo.Client.Close();
+            RemoveClient(UserNames[clientInfo.ID], clientInfo.ID);
         }
 
         private void SendMessage(MessagePackage package, int senderID)
@@ -125,11 +126,6 @@ namespace Server
             {
                 AddClient(package.SenderName, connectionInfo.ID);
             }
-
-            if (package.IsForDisconnection)
-            {
-                RemoveClient(package.SenderName, connectionInfo.ID);
-            }
         }
 
         private void NotifyClients()
@@ -149,13 +145,6 @@ namespace Server
             if(type == ServerMessageType.ClientDisconnection)
             {
                 Conversations[GLOBAL_CHAT].Add("Пользователь " + userName + " вышел из чата.");
-                foreach(var conversation in Conversations.Values)
-                {
-                    if (conversation != Conversations[GLOBAL_CHAT])
-                    {
-                        conversation.Add("Пользователь " + userName + " вышел из чата.");
-                    }
-                }
             }
 
             NotifyClients();
@@ -164,7 +153,9 @@ namespace Server
         private void RemoveClient(string userName, int id)
         {
             UserNames.Remove(id);
+            Connections.Remove(id);
             SendUsersList();
+
             Console.WriteLine("Пользователь " + id.ToString() + " (" + userName + ") отсоединился");
 
             foreach(var clientID in Connections.Keys)
@@ -174,8 +165,6 @@ namespace Server
             }
 
             SendServerMessage(ServerMessageType.ClientDisconnection, userName);
-            Connections[id].Shutdown(SocketShutdown.Both);
-            Connections.Remove(id);
             DisplayCurrentUsers();
         }
 
