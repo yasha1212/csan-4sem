@@ -15,7 +15,6 @@ namespace Client
     {
         private ClientService client;
         private List<string> chat;
-        private int receiverID = -1;
         private bool isForAll;
 
         public MainForm()
@@ -37,7 +36,7 @@ namespace Client
 
         private void bSend_Click(object sender, EventArgs e)
         {
-            client.SendMessage(tbMessage.Text, isForAll, receiverID);
+            client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID);
             tbMessage.Clear();
         }
 
@@ -68,7 +67,7 @@ namespace Client
             {
                 try
                 {
-                    chat = client.Conversations[(client.UserID, receiverID)];
+                    chat = client.Conversations[(client.UserID, client.ReceiverID)];
                 }
                 catch
                 {
@@ -81,7 +80,7 @@ namespace Client
             {
                 lbChat.Items.Add(message);
             }
-            lbChat.TopIndex = lbChat.Items.Count - 1; // проверить работу
+            lbChat.TopIndex = lbChat.Items.Count - 1;
         }
 
         private void UpdateServer()
@@ -93,6 +92,7 @@ namespace Client
         private void UpdateUsersList()
         {
             cbUsers.Items.Clear();
+            lbNotifications.Items.Clear();
             tbID.Text = client.UserID.ToString();
 
             foreach (var id in client.UserNames.Keys)
@@ -100,12 +100,15 @@ namespace Client
                 if (id != client.UserID)
                 {
                     cbUsers.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")");
-                    if (client.UserNames.ContainsKey(receiverID))
+                    lbNotifications.Items.Add(client.UserNames[id] + "(" + id.ToString() + ")" + (client.Notifications[id] > 0 ? " - " + client.Notifications[id].ToString() : ""));
+                    if (client.UserNames.ContainsKey(client.ReceiverID))
                     {
-                        cbUsers.SelectedItem = client.UserNames[receiverID] + "(" + receiverID.ToString() + ")";
+                        cbUsers.SelectedItem = client.UserNames[client.ReceiverID] + "(" + client.ReceiverID.ToString() + ")";
                     }
                 }
             }
+
+            lbNotifications.Items.Add("Global Chat" + (client.Notifications[-1] > 0 ? " - " + client.Notifications[-1].ToString() : ""));
         }
 
         private void bDisconnect_Click(object sender, EventArgs e)
@@ -152,6 +155,7 @@ namespace Client
             cbUsers.Enabled = false;
             bSend.Enabled = true;
             isForAll = true;
+            client.ReceiverID = -1;
             UpdateChat();
         }
 
@@ -166,7 +170,7 @@ namespace Client
         {
             if(cbUsers.SelectedIndex != -1)
             {
-                receiverID = IDExtractor.GetIDFromString(cbUsers.SelectedItem.ToString());
+                client.ReceiverID = IDExtractor.GetIDFromString(cbUsers.SelectedItem.ToString());
                 bSend.Enabled = true;
                 UpdateChat();
             }
@@ -188,9 +192,35 @@ namespace Client
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-                client.SendMessage(tbMessage.Text, isForAll, receiverID);
+                client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID);
                 tbMessage.Clear();
             }
+        }
+
+        private void tbMessage_Enter(object sender, EventArgs e)
+        {
+            if (cbUsers.SelectedIndex != -1)
+            {
+                client.Notifications[IDExtractor.GetIDFromString(cbUsers.SelectedItem.ToString())] = 0;
+            }
+            else
+            {
+                client.Notifications[-1] = 0;
+            }
+            UpdateUsersList();
+        }
+
+        private void tbMessage_TextChanged(object sender, EventArgs e)
+        {
+            if (cbUsers.SelectedIndex != -1)
+            {
+                client.Notifications[IDExtractor.GetIDFromString(cbUsers.SelectedItem.ToString())] = 0;
+            }
+            else
+            {
+                client.Notifications[-1] = 0;
+            }
+            UpdateUsersList();
         }
     }
 }

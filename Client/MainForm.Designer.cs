@@ -44,22 +44,26 @@
             this.laUserID = new System.Windows.Forms.Label();
             this.rbGlobal = new System.Windows.Forms.RadioButton();
             this.rbPrivate = new System.Windows.Forms.RadioButton();
+            this.lbNotifications = new System.Windows.Forms.ListBox();
+            this.laNotifications = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tbMessage
             // 
             this.tbMessage.Enabled = false;
             this.tbMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbMessage.Location = new System.Drawing.Point(12, 406);
+            this.tbMessage.Location = new System.Drawing.Point(12, 466);
             this.tbMessage.Name = "tbMessage";
             this.tbMessage.Size = new System.Drawing.Size(660, 28);
             this.tbMessage.TabIndex = 0;
+            this.tbMessage.TextChanged += new System.EventHandler(this.tbMessage_TextChanged);
+            this.tbMessage.Enter += new System.EventHandler(this.tbMessage_Enter);
             this.tbMessage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbMessage_KeyPress);
             // 
             // bSend
             // 
             this.bSend.Enabled = false;
-            this.bSend.Location = new System.Drawing.Point(678, 406);
+            this.bSend.Location = new System.Drawing.Point(678, 466);
             this.bSend.Name = "bSend";
             this.bSend.Size = new System.Drawing.Size(123, 29);
             this.bSend.TabIndex = 1;
@@ -98,7 +102,7 @@
             this.lbChat.Location = new System.Drawing.Point(12, 12);
             this.lbChat.Name = "lbChat";
             this.lbChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.lbChat.Size = new System.Drawing.Size(789, 384);
+            this.lbChat.Size = new System.Drawing.Size(789, 444);
             this.lbChat.TabIndex = 4;
             // 
             // tbAdress
@@ -165,7 +169,7 @@
             this.cbUsers.Enabled = false;
             this.cbUsers.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbUsers.FormattingEnabled = true;
-            this.cbUsers.Location = new System.Drawing.Point(807, 406);
+            this.cbUsers.Location = new System.Drawing.Point(807, 466);
             this.cbUsers.Name = "cbUsers";
             this.cbUsers.Size = new System.Drawing.Size(304, 28);
             this.cbUsers.TabIndex = 11;
@@ -197,7 +201,7 @@
             this.rbGlobal.Checked = true;
             this.rbGlobal.Enabled = false;
             this.rbGlobal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rbGlobal.Location = new System.Drawing.Point(807, 311);
+            this.rbGlobal.Location = new System.Drawing.Point(807, 258);
             this.rbGlobal.Name = "rbGlobal";
             this.rbGlobal.Size = new System.Drawing.Size(128, 28);
             this.rbGlobal.TabIndex = 14;
@@ -211,7 +215,7 @@
             this.rbPrivate.AutoSize = true;
             this.rbPrivate.Enabled = false;
             this.rbPrivate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rbPrivate.Location = new System.Drawing.Point(983, 311);
+            this.rbPrivate.Location = new System.Drawing.Point(981, 258);
             this.rbPrivate.Name = "rbPrivate";
             this.rbPrivate.Size = new System.Drawing.Size(130, 28);
             this.rbPrivate.TabIndex = 15;
@@ -219,11 +223,35 @@
             this.rbPrivate.UseVisualStyleBackColor = true;
             this.rbPrivate.CheckedChanged += new System.EventHandler(this.rbPrivate_CheckedChanged);
             // 
+            // lbNotifications
+            // 
+            this.lbNotifications.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbNotifications.FormattingEnabled = true;
+            this.lbNotifications.IntegralHeight = false;
+            this.lbNotifications.ItemHeight = 20;
+            this.lbNotifications.Location = new System.Drawing.Point(807, 332);
+            this.lbNotifications.Name = "lbNotifications";
+            this.lbNotifications.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.lbNotifications.Size = new System.Drawing.Size(304, 124);
+            this.lbNotifications.TabIndex = 16;
+            // 
+            // laNotifications
+            // 
+            this.laNotifications.AutoSize = true;
+            this.laNotifications.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.laNotifications.Location = new System.Drawing.Point(807, 309);
+            this.laNotifications.Name = "laNotifications";
+            this.laNotifications.Size = new System.Drawing.Size(102, 20);
+            this.laNotifications.TabIndex = 17;
+            this.laNotifications.Text = "Notifications";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1123, 450);
+            this.ClientSize = new System.Drawing.Size(1123, 506);
+            this.Controls.Add(this.laNotifications);
+            this.Controls.Add(this.lbNotifications);
             this.Controls.Add(this.rbPrivate);
             this.Controls.Add(this.rbGlobal);
             this.Controls.Add(this.laUserID);
@@ -267,6 +295,8 @@
         private System.Windows.Forms.Label laUserID;
         private System.Windows.Forms.RadioButton rbGlobal;
         private System.Windows.Forms.RadioButton rbPrivate;
+        private System.Windows.Forms.ListBox lbNotifications;
+        private System.Windows.Forms.Label laNotifications;
     }
 }
 

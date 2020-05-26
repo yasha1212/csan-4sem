@@ -15,23 +15,22 @@ namespace Client
     {
         private const string broadcastIPAdress = "169.254.70.139";
         private readonly (int, int) GLOBAL_CHAT = (-1, -1);
+
         private Socket clientSocket;
         private Socket listenerUDP;
         private ISerializer serializeHelper;
-        public delegate void HandleEvent();
-        public event HandleEvent UpdateInterface;
         private Thread thread, threadUDP;
 
+        public delegate void HandleEvent();
+        public event HandleEvent UpdateInterface;
+
         public string UserName { get; set; }
-
+        public int ReceiverID { get; set; }
         public int UserID { get; set; }
-
         public Dictionary<int, string> UserNames { get; private set; }
-
+        public Dictionary<int, int> Notifications { get; set; }
         public Dictionary<(int, int), List<string>> Conversations { get; private set; }
-
         public int ServerPort { get; private set; }
-        
         public IPAddress ServerIP { get; private set; }
 
         public ClientService()
@@ -39,7 +38,10 @@ namespace Client
             Conversations = new Dictionary<(int, int), List<string>>();
             Conversations[GLOBAL_CHAT] = new List<string>();
             UserNames = new Dictionary<int, string>();
+            Notifications = new Dictionary<int, int>();
+            Notifications.Add(GLOBAL_CHAT.Item1, 0);
             serializeHelper = new BinarySerializeHelper();
+            ReceiverID = -1;
             SetUDPListener();
         }
 
@@ -87,13 +89,11 @@ namespace Client
             var package = new MessagePackage(message, UserName, receiverID);
             package.IsForAll = isForAll;
             clientSocket.Send(serializeHelper.Serialize(package));
-            UpdateInterface?.Invoke();
         }
 
         private void SendMessage(MessagePackage package)
         {
             clientSocket.Send(serializeHelper.Serialize(package));
-            UpdateInterface?.Invoke();
         }
 
         private void ReceiveMessage()
@@ -121,26 +121,73 @@ namespace Client
             {
                 var package = data as UsersListPackage;
                 UserNames = package.Users;
+                InitializeNotifications();
                 UserID = package.UserID;
             }
 
             if (data as Dictionary<(int, int), List<string>> != null)
             {
+                var temp = CloneDictionary(Conversations);
                 Conversations = data as Dictionary<(int, int), List<string>>;
+                UpdateNotifications(temp);
             }
 
             UpdateInterface?.Invoke();
         }
 
+        private void UpdateNotifications(Dictionary<(int, int), List<string>> clone)
+        {
+            foreach (var key in Conversations.Keys)
+            {
+                if (clone.ContainsKey(key) && key.Item2 != ReceiverID)
+                {
+                    Notifications[key.Item2] += Conversations[key].Count - clone[key].Count;
+                }
+            }
+        }
+
+        private Dictionary<T, U> CloneDictionary<T, U>(Dictionary<T, U> source)
+        {
+            var clone = new Dictionary<T, U>();
+
+            foreach (var key in source.Keys)
+            {
+                clone.Add(key, source[key]);
+            }
+
+            return clone;
+        }
+
+        private void InitializeNotifications()
+        {
+            var clone = CloneDictionary(Notifications);
+
+            foreach (var key in clone.Keys)
+            {
+                if (!UserNames.ContainsKey(key) && key != -1)
+                {
+                    Notifications.Remove(key);
+                }
+            }
+
+            foreach (var key in UserNames.Keys)
+            {
+                if (!Notifications.ContainsKey(key))
+                {
+                    Notifications.Add(key, 0);
+                }
+            }
+        }
+
         public void Stop()
         {
-            thread.Abort();
-            thread.Join(100);
+            thread?.Abort();
+            thread?.Join(100);
             Conversations.Clear();
             Conversations.Add(GLOBAL_CHAT, new List<string>());
             UserNames.Clear();
-            clientSocket.Shutdown(SocketShutdown.Both);
-            clientSocket.Close();
+            clientSocket?.Shutdown(SocketShutdown.Both);
+            clientSocket?.Close();
         }
 
         public void Start()

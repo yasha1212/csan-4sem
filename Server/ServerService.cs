@@ -18,17 +18,15 @@ namespace Server
     {
         private const int MAX_CONNECTIONS_AMOUNT = 10;
         private readonly (int, int) GLOBAL_CHAT = (-1, -1);
+
         private Socket listenSocket;
         private Socket clientSocket;
         private int id;
         private ISerializer serializeHelper;
 
         public Dictionary<int, Socket> Connections { get; private set; }
-
         public Dictionary<(int, int), List<string>> Conversations { get; private set; }
-
         public Dictionary<int, string> UserNames { get; private set; }
-
         public int Port { get; private set; }
 
         public ServerService(int port)
