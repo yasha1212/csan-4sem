@@ -20,7 +20,7 @@ namespace Client.Http
             httpClient = new HttpClient();
         }
 
-        public async void AddFileAsync(string path, int userID)
+        public async Task<bool> AddFileAsync(string path, int userID)
         {
             HttpResponseMessage response;
             int duplicateNumber = 0;
@@ -52,6 +52,49 @@ namespace Client.Http
                 }
             }
             while (response.StatusCode != HttpStatusCode.OK);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteFileAsync(int fileID)
+        {
+            string request = SERVER_URI + "?fileid=" + fileID.ToString();
+
+            var response = await httpClient.DeleteAsync(request);
+
+            return response.IsSuccessStatusCode ? true : false;
+        }
+
+        public async Task<Stream> GetFileAsync(int fileID)
+        {
+            string request = SERVER_URI + "?fileid=" + fileID.ToString() + "&resourcetype=file";
+
+            var response = await httpClient.GetAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStreamAsync();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<FileAttributes> GetFileAttributesAsync(int fileID)
+        {
+            string request = SERVER_URI + "?fileid=" + fileID.ToString() + "&resourcetype=attributes";
+
+            var response = await httpClient.GetAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return new FileAttributes(int.Parse(response.Headers.GetValues("size").ToList()[0]), response.Headers.GetValues("name").ToList()[0]);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

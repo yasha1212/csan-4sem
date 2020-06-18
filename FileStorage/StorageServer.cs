@@ -45,16 +45,23 @@ namespace FileStorage
             switch (context.Request.HttpMethod)
             {
                 case "GET":
-                    GetFile(context);
+                    var resourceType = context.Request.QueryString.Get("resourcetype");
+                    
+                    if (resourceType == "file")
+                    {
+                        GetFile(context);
+                    }
+                    else
+                    {
+                        GetFileAttributes(context);
+                    }
+
                     break;
                 case "POST":
                     AddFile(context);
                     break;
                 case "DELETE":
                     DeleteFile(context);
-                    break;
-                case "HEAD":
-                    GetFileAttrubutes(context);
                     break;
             }
         }
@@ -177,7 +184,7 @@ namespace FileStorage
             response.Close();
         }
 
-        private void GetFileAttrubutes(HttpListenerContext context)
+        private void GetFileAttributes(HttpListenerContext context)
         {
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
