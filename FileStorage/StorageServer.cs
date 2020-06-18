@@ -61,7 +61,28 @@ namespace FileStorage
 
         private void DeleteFile(HttpListenerContext context)
         {
+            HttpListenerRequest request = context.Request;
+            HttpListenerResponse response = context.Response;
 
+            int fileID = int.Parse(request.QueryString.Get("fileid"));
+
+            if (files.ContainsKey(fileID))
+            {
+                string filePath = files[fileID].Path;
+
+                File.Delete(filePath);
+                files.Remove(fileID);
+                response.StatusCode = (int)HttpStatusCode.OK;
+
+                Console.WriteLine("File " + files[fileID].Name + " id: " + fileID.ToString() + " has been removed");
+            }
+            else
+            {
+                Console.WriteLine("File with id " + fileID.ToString() + " does not exist");
+                response.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+
+            response.Close();
         }
 
         private void AddFile(HttpListenerContext context)
@@ -131,12 +152,54 @@ namespace FileStorage
 
         private void GetFile(HttpListenerContext context)
         {
+            HttpListenerRequest request = context.Request;
+            HttpListenerResponse response = context.Response;
 
+            int fileID = int.Parse(request.QueryString.Get("fileid"));
+
+            if (files.ContainsKey(fileID))
+            {
+                using (var fs = new FileStream(files[fileID].Path, FileMode.Open))
+                {
+                    fs.CopyTo(response.OutputStream);
+                    response.StatusCode = (int)HttpStatusCode.OK;
+
+                    Console.WriteLine("File " + files[fileID].Name + " is downloaded");
+                }
+            }
+            else
+            {
+                Console.WriteLine("File with id " + fileID.ToString() + " does not exist");
+
+                response.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+
+            response.Close();
         }
 
         private void GetFileAttrubutes(HttpListenerContext context)
         {
+            HttpListenerRequest request = context.Request;
+            HttpListenerResponse response = context.Response;
 
+            int fileID = int.Parse(request.QueryString.Get("fileid"));
+
+            if (files.ContainsKey(fileID))
+            {
+                FileAttributes attributes = files[fileID];
+
+                response.Headers.Set("name", attributes.Name);
+                response.Headers.Set("size", attributes.Size.ToString());
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            else
+            {
+                Console.WriteLine("File with id " + fileID.ToString() + " does not exist");
+
+                response.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+
+            response.Close();
         }
     }
 }
