@@ -52,6 +52,7 @@ namespace Client
             rbGlobal.Enabled = true;
             rbPrivate.Enabled = true;
             bConnect.Enabled = false;
+            bUploadFile.Enabled = true;
             bAcceptName.Enabled = false;
             tbUserName.ReadOnly = true;
         }
@@ -129,6 +130,10 @@ namespace Client
             bFindServer.Enabled = true;
             bSend.Enabled = false;
             bDisconnect.Enabled = false;
+            bUploadFile.Enabled = false;
+            bViewFiles.Enabled = false;
+            bGetInfo.Enabled = false;
+            bDeleteFile.Enabled = false;
             tbMessage.Enabled = false;
         }
 
@@ -222,6 +227,27 @@ namespace Client
                 client.Notifications[-1] = 0;
             }
             UpdateUsersList();
+        }
+
+        private void lbFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbFiles.SelectedIndex != -1)
+            {
+                bDeleteFile.Enabled = true;
+                bGetInfo.Enabled = true;
+            }
+            else
+            {
+                bDeleteFile.Enabled = false;
+                bGetInfo.Enabled = false;
+            }
+        }
+
+        private void UpdateFilesList()
+        {
+            lbFiles.Items.Clear();
+
+            // ДОБАВИТЬ СЕРВИС ПРИКРЕПЛЕНИЯ ФАЙЛОВ И ОБРАБОТЧИК ОБНОВЛЕНИЯ СПИСКА ФАЙЛОВ + НАЖАТИЯ КНОПОК
         }
     }
 }
