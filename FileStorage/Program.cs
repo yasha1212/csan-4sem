@@ -6,6 +6,8 @@ namespace FileStorage
     {
         static void Main(string[] args)
         {
+            var server = new StorageServer();
+            server.Start();
         }
     }
 }

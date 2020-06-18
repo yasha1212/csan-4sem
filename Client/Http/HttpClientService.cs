@@ -11,7 +11,7 @@ namespace Client.Http
 {
     public class HttpClientService
     {
-        private const string SERVER_URI = "http://localhost:8080/";
+        private const string SERVER_URI = "http://localhost:3000/";
 
         private HttpClient httpClient;
 
@@ -20,7 +20,7 @@ namespace Client.Http
             httpClient = new HttpClient();
         }
 
-        public async Task<int> AddFile(string path, int userID)
+        public async void AddFileAsync(string path, int userID)
         {
             HttpResponseMessage response;
             int duplicateNumber = 0;
@@ -52,8 +52,6 @@ namespace Client.Http
                 }
             }
             while (response.StatusCode != HttpStatusCode.OK);
-
-            return -1;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace FileStorage
 {
     public class StorageServer
     {
-        private const string SERVER_URI = "http://localhost:8080/";
+        private const string SERVER_URI = "http://localhost:3000/";
         private const string STORAGE_PATH = @"D:\University\GitRepos\csan-4sem-1\RealStorage\";
 
         private int fileID;
@@ -82,7 +82,9 @@ namespace FileStorage
                         request.InputStream.CopyTo(fs);
 
                         var fileInfo = new FileInfo(filePath);
-                        files.Add(fileID++, new FileAttributes(fileInfo.Length, fileInfo.Name, fileInfo.FullName));
+                        files.Add(++fileID, new FileAttributes(fileInfo.Length, fileInfo.Name, fileInfo.FullName));
+
+                        Console.WriteLine("File " + fileName + " id: " + fileID + " has been added");
 
                         response.StatusCode = (int)HttpStatusCode.OK;
                         response.Close();
@@ -90,6 +92,8 @@ namespace FileStorage
                 }
                 else
                 {
+                    Console.WriteLine("File " + fileName + "is already exists");
+
                     foreach (var id in files.Keys)
                     {
                         if (files[id].Name == fileName)
@@ -116,6 +120,8 @@ namespace FileStorage
 
                     var fileInfo = new FileInfo(filePath);
                     files.Add(fileID++, new FileAttributes(fileInfo.Length, fileInfo.Name, fileInfo.FullName));
+
+                    Console.WriteLine("File " + fileName + " id: " + fileID + " has been added");
 
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Close();
