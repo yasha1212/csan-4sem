@@ -20,7 +20,7 @@ namespace Client.Http
             httpClient = new HttpClient();
         }
 
-        public async Task<bool> AddFileAsync(string path, int userID)
+        public async Task<int> AddFileAsync(string path, int userID)
         {
             HttpResponseMessage response;
             int duplicateNumber = 0;
@@ -53,7 +53,7 @@ namespace Client.Http
             }
             while (response.StatusCode != HttpStatusCode.OK);
 
-            return true;
+            return int.Parse(response.Headers.GetValues("fileid").ToList()[0]);
         }
 
         public async Task<bool> DeleteFileAsync(int fileID)

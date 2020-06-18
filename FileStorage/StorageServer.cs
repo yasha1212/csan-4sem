@@ -114,6 +114,7 @@ namespace FileStorage
 
                         Console.WriteLine("File " + fileName + " id: " + fileID + " has been added");
 
+                        response.Headers.Set("fileid", fileID.ToString());
                         response.StatusCode = (int)HttpStatusCode.OK;
                         response.Close();
                     }
@@ -127,10 +128,7 @@ namespace FileStorage
                         if (files[id].Name == fileName)
                         {
                             response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                            byte[] data = Encoding.Unicode.GetBytes(id.ToString());
-
-                            response.OutputStream.Write(data, 0, data.Length);
+                            response.Headers.Set("fileid", id.ToString());
                             response.Close();
 
                             break;
