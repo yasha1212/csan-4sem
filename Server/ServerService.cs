@@ -25,7 +25,7 @@ namespace Server
         private ISerializer serializeHelper;
 
         public Dictionary<int, Socket> Connections { get; private set; }
-        public Dictionary<(int, int), List<string>> Conversations { get; private set; }
+        public Dictionary<(int, int), List<Message>> Conversations { get; private set; }
         public Dictionary<int, string> UserNames { get; private set; }
         public int Port { get; private set; }
 
@@ -34,8 +34,8 @@ namespace Server
             Port = port;
             id = 0;
             Connections = new Dictionary<int, Socket>();
-            Conversations = new Dictionary<(int, int), List<string>>();
-            Conversations[GLOBAL_CHAT] = new List<string>();
+            Conversations = new Dictionary<(int, int), List<Message>>();
+            Conversations[GLOBAL_CHAT] = new List<Message>();
             UserNames = new Dictionary<int, string>();
             serializeHelper = new BinarySerializeHelper();
         }
@@ -103,16 +103,17 @@ namespace Server
 
         private void SendMessage(MessagePackage package, int senderID)
         {
-            var message = "[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + UserNames[senderID] + ": " + package.Message;
+            var message = "[" + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + "] " + 
+                (package.Files.Count > 0 ? "{" + package.Files.Count.ToString() + " files} " : "") + UserNames[senderID] + ": " + package.Message;
 
             if (package.IsForAll)
             {
-                Conversations[GLOBAL_CHAT].Add(message);
+                Conversations[GLOBAL_CHAT].Add(new Message(message, package.Files));
             }
             else
             {
-                Conversations[(senderID, package.ReceiverID)].Add(message);
-                Conversations[(package.ReceiverID, senderID)].Add(message);
+                Conversations[(senderID, package.ReceiverID)].Add(new Message(message, package.Files));
+                Conversations[(package.ReceiverID, senderID)].Add(new Message(message, package.Files));
             }
 
             NotifyClients();
@@ -138,11 +139,11 @@ namespace Server
         {
             if(type == ServerMessageType.ClientConnection)
             {
-                Conversations[GLOBAL_CHAT].Add("К вам присоединился пользователь " + userName + ". Добро пожаловать!");
+                Conversations[GLOBAL_CHAT].Add(new Message("К вам присоединился пользователь " + userName + ". Добро пожаловать!", new List<int>()));
             }
             if(type == ServerMessageType.ClientDisconnection)
             {
-                Conversations[GLOBAL_CHAT].Add("Пользователь " + userName + " вышел из чата.");
+                Conversations[GLOBAL_CHAT].Add(new Message("Пользователь " + userName + " вышел из чата.", new List<int>()));
             }
 
             NotifyClients();
@@ -176,8 +177,8 @@ namespace Server
             {
                 if (clientID != id)
                 {
-                    Conversations.Add((id, clientID), new List<string>());
-                    Conversations.Add((clientID, id), new List<string>());
+                    Conversations.Add((id, clientID), new List<Message>());
+                    Conversations.Add((clientID, id), new List<Message>());
                 }
             }
 

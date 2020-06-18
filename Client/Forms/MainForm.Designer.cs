@@ -46,6 +46,11 @@
             this.rbPrivate = new System.Windows.Forms.RadioButton();
             this.lbNotifications = new System.Windows.Forms.ListBox();
             this.laNotifications = new System.Windows.Forms.Label();
+            this.lbFiles = new System.Windows.Forms.ListBox();
+            this.bGetInfo = new System.Windows.Forms.Button();
+            this.bDeleteFile = new System.Windows.Forms.Button();
+            this.bViewFiles = new System.Windows.Forms.Button();
+            this.bUploadFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbMessage
@@ -101,9 +106,9 @@
             this.lbChat.ItemHeight = 20;
             this.lbChat.Location = new System.Drawing.Point(12, 12);
             this.lbChat.Name = "lbChat";
-            this.lbChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lbChat.Size = new System.Drawing.Size(789, 444);
             this.lbChat.TabIndex = 4;
+            this.lbChat.SelectedIndexChanged += new System.EventHandler(this.lbChat_SelectedIndexChanged);
             // 
             // tbAdress
             // 
@@ -245,11 +250,76 @@
             this.laNotifications.TabIndex = 17;
             this.laNotifications.Text = "Notifications";
             // 
+            // lbFiles
+            // 
+            this.lbFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbFiles.FormattingEnabled = true;
+            this.lbFiles.IntegralHeight = false;
+            this.lbFiles.ItemHeight = 20;
+            this.lbFiles.Location = new System.Drawing.Point(807, 540);
+            this.lbFiles.Name = "lbFiles";
+            this.lbFiles.Size = new System.Drawing.Size(304, 124);
+            this.lbFiles.TabIndex = 18;
+            this.lbFiles.SelectedIndexChanged += new System.EventHandler(this.lbFiles_SelectedIndexChanged);
+            // 
+            // bGetInfo
+            // 
+            this.bGetInfo.Enabled = false;
+            this.bGetInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bGetInfo.Location = new System.Drawing.Point(442, 616);
+            this.bGetInfo.Name = "bGetInfo";
+            this.bGetInfo.Size = new System.Drawing.Size(359, 48);
+            this.bGetInfo.TabIndex = 22;
+            this.bGetInfo.Text = "Get file info";
+            this.bGetInfo.UseVisualStyleBackColor = true;
+            this.bGetInfo.Click += new System.EventHandler(this.bGetInfo_Click);
+            // 
+            // bDeleteFile
+            // 
+            this.bDeleteFile.Enabled = false;
+            this.bDeleteFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bDeleteFile.Location = new System.Drawing.Point(442, 540);
+            this.bDeleteFile.Name = "bDeleteFile";
+            this.bDeleteFile.Size = new System.Drawing.Size(359, 48);
+            this.bDeleteFile.TabIndex = 23;
+            this.bDeleteFile.Text = "Delete file";
+            this.bDeleteFile.UseVisualStyleBackColor = true;
+            this.bDeleteFile.Click += new System.EventHandler(this.bDeleteFile_Click);
+            // 
+            // bViewFiles
+            // 
+            this.bViewFiles.Enabled = false;
+            this.bViewFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bViewFiles.Location = new System.Drawing.Point(12, 616);
+            this.bViewFiles.Name = "bViewFiles";
+            this.bViewFiles.Size = new System.Drawing.Size(359, 48);
+            this.bViewFiles.TabIndex = 24;
+            this.bViewFiles.Text = "View files";
+            this.bViewFiles.UseVisualStyleBackColor = true;
+            this.bViewFiles.Click += new System.EventHandler(this.bViewFiles_Click);
+            // 
+            // bUploadFile
+            // 
+            this.bUploadFile.Enabled = false;
+            this.bUploadFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bUploadFile.Location = new System.Drawing.Point(12, 540);
+            this.bUploadFile.Name = "bUploadFile";
+            this.bUploadFile.Size = new System.Drawing.Size(359, 48);
+            this.bUploadFile.TabIndex = 25;
+            this.bUploadFile.Text = "Upload file";
+            this.bUploadFile.UseVisualStyleBackColor = true;
+            this.bUploadFile.Click += new System.EventHandler(this.bUploadFile_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1123, 506);
+            this.ClientSize = new System.Drawing.Size(1123, 676);
+            this.Controls.Add(this.bUploadFile);
+            this.Controls.Add(this.bViewFiles);
+            this.Controls.Add(this.bDeleteFile);
+            this.Controls.Add(this.bGetInfo);
+            this.Controls.Add(this.lbFiles);
             this.Controls.Add(this.laNotifications);
             this.Controls.Add(this.lbNotifications);
             this.Controls.Add(this.rbPrivate);
@@ -297,6 +367,11 @@
         private System.Windows.Forms.RadioButton rbPrivate;
         private System.Windows.Forms.ListBox lbNotifications;
         private System.Windows.Forms.Label laNotifications;
+        private System.Windows.Forms.ListBox lbFiles;
+        private System.Windows.Forms.Button bGetInfo;
+        private System.Windows.Forms.Button bDeleteFile;
+        private System.Windows.Forms.Button bViewFiles;
+        private System.Windows.Forms.Button bUploadFile;
     }
 }
 
