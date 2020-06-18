@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -65,7 +66,24 @@ namespace Client
                 {
                     if (fileInfo.Length + totalFilesSize <= MAX_TOTAL_FILE_SIZE)
                     {
-                        if (!UNACCEPTABLE_EXTENSIONS.Contains(fileInfo.Extension))
+                        if (fileInfo.Extension == ".zip")
+                        {
+                            if (IsCorrectArchive(path))
+                            {
+                                int fileID = await httpService.AddFileAsync(path, userID);
+                                Files.Add(fileID, fileInfo.Name);
+                                totalFilesSize += fileInfo.Length;
+
+                                UpdateFilesList?.Invoke();
+
+                                MessageBox.Show("File " + fileInfo.Name + " was uploaded with id = " + fileID.ToString());
+                            }
+                            else
+                            {
+                                MessageBox.Show("Chosen archive has files with unacceptable extensions");
+                            }
+                        }
+                        else if (!UNACCEPTABLE_EXTENSIONS.Contains(fileInfo.Extension))
                         {
                             int fileID = await httpService.AddFileAsync(path, userID);
                             Files.Add(fileID, fileInfo.Name);
@@ -167,6 +185,24 @@ namespace Client
             catch
             {
                 MessageBox.Show("Something unexpected happened");
+            }
+        }
+
+        private bool IsCorrectArchive(string path)
+        {
+            using (ZipArchive archive = ZipFile.OpenRead(path))
+            {
+                foreach (var file in archive.Entries)
+                {
+                    var fileInfo = new FileInfo(file.FullName);
+
+                    if (UNACCEPTABLE_EXTENSIONS.Contains(fileInfo.Extension))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
     }
