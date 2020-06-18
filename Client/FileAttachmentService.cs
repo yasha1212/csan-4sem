@@ -121,7 +121,7 @@ namespace Client
             }
         }
 
-        public async void GetFileInfo(int fileID)
+        public async Task<Http.FileAttributes> GetFileInfo(int fileID)
         {
             try
             {
@@ -129,16 +129,18 @@ namespace Client
 
                 if (attributes != null)
                 {
-                    MessageBox.Show("File name: " + attributes.Name + "\nFile size: " + attributes.Size.ToString() + " bytes");
+                    return attributes;
                 }
                 else
                 {
                     MessageBox.Show("There is no file with such id");
+                    return null;
                 }
             }
             catch
             {
                 MessageBox.Show("Something unexpected happened");
+                return null;
             }
         }
 

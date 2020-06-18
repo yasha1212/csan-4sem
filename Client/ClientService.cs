@@ -29,14 +29,14 @@ namespace Client
         public int UserID { get; set; }
         public Dictionary<int, string> UserNames { get; private set; }
         public Dictionary<int, int> Notifications { get; set; }
-        public Dictionary<(int, int), List<string>> Conversations { get; private set; }
+        public Dictionary<(int, int), List<Message>> Conversations { get; private set; }
         public int ServerPort { get; private set; }
         public IPAddress ServerIP { get; private set; }
 
         public ClientService()
         {
-            Conversations = new Dictionary<(int, int), List<string>>();
-            Conversations[GLOBAL_CHAT] = new List<string>();
+            Conversations = new Dictionary<(int, int), List<Message>>();
+            Conversations[GLOBAL_CHAT] = new List<Message>();
             UserNames = new Dictionary<int, string>();
             Notifications = new Dictionary<int, int>();
             Notifications.Add(GLOBAL_CHAT.Item1, 0);
@@ -84,9 +84,9 @@ namespace Client
             UpdateInterface += handler;
         }
 
-        public void SendMessage(string message, bool isForAll, int receiverID)
+        public void SendMessage(string message, bool isForAll, int receiverID, List<int> files)
         {
-            var package = new MessagePackage(message, UserName, receiverID);
+            var package = new MessagePackage(message, UserName, receiverID, files);
             package.IsForAll = isForAll;
             clientSocket.Send(serializeHelper.Serialize(package));
         }
@@ -125,17 +125,17 @@ namespace Client
                 UserID = package.UserID;
             }
 
-            if (data as Dictionary<(int, int), List<string>> != null)
+            if (data as Dictionary<(int, int), List<Message>> != null)
             {
                 var temp = CloneDictionary(Conversations);
-                Conversations = data as Dictionary<(int, int), List<string>>;
+                Conversations = data as Dictionary<(int, int), List<Message>>;
                 UpdateNotifications(temp);
             }
 
             UpdateInterface?.Invoke();
         }
 
-        private void UpdateNotifications(Dictionary<(int, int), List<string>> clone)
+        private void UpdateNotifications(Dictionary<(int, int), List<Message>> clone)
         {
             foreach (var key in Conversations.Keys)
             {
@@ -184,7 +184,7 @@ namespace Client
             thread?.Abort();
             thread?.Join(100);
             Conversations.Clear();
-            Conversations.Add(GLOBAL_CHAT, new List<string>());
+            Conversations.Add(GLOBAL_CHAT, new List<Message>());
             UserNames.Clear();
             clientSocket?.Shutdown(SocketShutdown.Both);
             clientSocket?.Close();
@@ -207,7 +207,7 @@ namespace Client
             SendMessage(package);
         }
 
-        public List<String> GetGlobalChat()
+        public List<Message> GetGlobalChat()
         {
             return Conversations[GLOBAL_CHAT];
         }

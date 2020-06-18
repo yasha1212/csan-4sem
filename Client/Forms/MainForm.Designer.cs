@@ -108,6 +108,7 @@
             this.lbChat.Name = "lbChat";
             this.lbChat.Size = new System.Drawing.Size(789, 444);
             this.lbChat.TabIndex = 4;
+            this.lbChat.SelectedIndexChanged += new System.EventHandler(this.lbChat_SelectedIndexChanged);
             // 
             // tbAdress
             // 
@@ -295,6 +296,7 @@
             this.bViewFiles.TabIndex = 24;
             this.bViewFiles.Text = "View files";
             this.bViewFiles.UseVisualStyleBackColor = true;
+            this.bViewFiles.Click += new System.EventHandler(this.bViewFiles_Click);
             // 
             // bUploadFile
             // 

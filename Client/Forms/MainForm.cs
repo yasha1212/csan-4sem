@@ -17,7 +17,7 @@ namespace Client
     {
         private ClientService client;
         private FileAttachmentService fileAttachmentService;
-        private List<string> chat;
+        private List<Common.Message> chat;
         private bool isForAll;
 
         public MainForm()
@@ -41,7 +41,7 @@ namespace Client
 
         private void bSend_Click(object sender, EventArgs e)
         {
-            client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID);
+            client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID, fileAttachmentService.Files.Keys.ToList());
 
             fileAttachmentService.Initialize();
             tbMessage.Clear();
@@ -89,7 +89,7 @@ namespace Client
 
             foreach (var message in chat)
             {
-                lbChat.Items.Add(message);
+                lbChat.Items.Add(message.MessageContent);
             }
             lbChat.TopIndex = lbChat.Items.Count - 1;
         }
@@ -211,7 +211,7 @@ namespace Client
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-                client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID);
+                client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID, fileAttachmentService.Files.Keys.ToList());
 
                 fileAttachmentService.Initialize();
                 tbMessage.Clear();
@@ -290,14 +290,44 @@ namespace Client
             }
         }
 
-        private void bGetInfo_Click(object sender, EventArgs e)
+        private async void bGetInfo_Click(object sender, EventArgs e)
         {
             if (lbFiles.SelectedIndex != -1)
             {
                 int fileID = IDExtractor.GetIDFromString(lbFiles.SelectedItem.ToString());
 
-                fileAttachmentService.GetFileInfo(fileID);
+                var attributes = await fileAttachmentService.GetFileInfo(fileID);
+
+                MessageBox.Show("File name: " + attributes.Name + "\nFile size: " + attributes.Size.ToString() + " bytes");
             }
+        }
+
+        private void lbChat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbChat.SelectedIndex != -1)
+            {
+                if (chat[lbChat.SelectedIndex].AttachedFiles.Count > 0)
+                {
+                    bViewFiles.Enabled = true;
+                } 
+                else
+                {
+                    bViewFiles.Enabled = false;
+                }
+            }
+        }
+
+        private async void bViewFiles_Click(object sender, EventArgs e)
+        {
+            string files = "";
+
+            foreach (var fileID in chat[lbChat.SelectedIndex].AttachedFiles)
+            {
+                var attributes = await fileAttachmentService.GetFileInfo(fileID);
+                files += attributes.Name + ";\n";
+            }
+
+            MessageBox.Show(files);
         }
     }
 }

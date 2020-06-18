@@ -17,6 +17,8 @@ namespace Common
 
         public int ReceiverID { get; set; }
 
+        public List<int> Files { get; set; }
+
         public MessagePackage()
         {
             IsForConnection = false;
@@ -24,6 +26,7 @@ namespace Common
             Message = "";
             SenderName = "";
             ReceiverID = 0;
+            Files = new List<int>();
         }
 
         public MessagePackage(string senderName) : base()
@@ -37,9 +40,10 @@ namespace Common
             SenderName = senderName;
         }
 
-        public MessagePackage(string message, string senderName, int receiverID) : base()
+        public MessagePackage(string message, string senderName, int receiverID, List<int> files) : base()
         {
             Message = message;
+            Files = files;
             SenderName = senderName;
             ReceiverID = receiverID;
         }
