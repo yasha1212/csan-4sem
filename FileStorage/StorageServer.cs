@@ -77,11 +77,11 @@ namespace FileStorage
             {
                 string filePath = files[fileID].Path;
 
+                Console.WriteLine("File " + files[fileID].Name + " id: " + fileID.ToString() + " has been removed");
+
                 File.Delete(filePath);
                 files.Remove(fileID);
                 response.StatusCode = (int)HttpStatusCode.OK;
-
-                Console.WriteLine("File " + files[fileID].Name + " id: " + fileID.ToString() + " has been removed");
             }
             else
             {
@@ -121,7 +121,7 @@ namespace FileStorage
                 }
                 else
                 {
-                    Console.WriteLine("File " + fileName + "is already exists");
+                    Console.WriteLine("File " + fileName + " is already exists");
 
                     foreach (var id in files.Keys)
                     {
@@ -145,10 +145,11 @@ namespace FileStorage
                     request.InputStream.CopyTo(fs);
 
                     var fileInfo = new FileInfo(filePath);
-                    files.Add(fileID++, new FileAttributes(fileInfo.Length, fileInfo.Name, fileInfo.FullName));
+                    files.Add(++fileID, new FileAttributes(fileInfo.Length, fileInfo.Name, fileInfo.FullName));
 
                     Console.WriteLine("File " + fileName + " id: " + fileID + " has been added");
 
+                    response.Headers.Set("fileid", fileID.ToString());
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Close();
                 }

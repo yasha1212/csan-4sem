@@ -24,17 +24,30 @@ namespace Client
 
         private event Action UpdateFilesList;
 
-        public FileAttachmentService(int id)
+        public FileAttachmentService()
         {
             httpService = new HttpClientService();
 
+            UNACCEPTABLE_EXTENSIONS = new List<string>();
             UNACCEPTABLE_EXTENSIONS.Add(".exe");
             UNACCEPTABLE_EXTENSIONS.Add(".png");
             UNACCEPTABLE_EXTENSIONS.Add(".bin");
 
-            userID = id;
+            userID = 0;
             totalFilesSize = 0;
             Files = new Dictionary<int, string>();
+        }
+
+        public void Initialize()
+        {
+            Files.Clear();
+            totalFilesSize = 0;
+            userID = 0;
+        }
+
+        public void SetID(int userID)
+        {
+            this.userID = userID;
         }
 
         public void SubscribeHandler(Action handler)
@@ -42,7 +55,7 @@ namespace Client
             UpdateFilesList += handler;
         }
 
-        public void UploadFile(string path)
+        public async void UploadFile(string path)
         {
             var fileInfo = new FileInfo(path);
 
@@ -54,7 +67,7 @@ namespace Client
                     {
                         if (!UNACCEPTABLE_EXTENSIONS.Contains(fileInfo.Extension))
                         {
-                            int fileID = httpService.AddFileAsync(path, userID).Result;
+                            int fileID = await httpService.AddFileAsync(path, userID);
                             Files.Add(fileID, fileInfo.Name);
                             totalFilesSize += fileInfo.Length;
 
@@ -83,12 +96,18 @@ namespace Client
             }
         }
 
-        public void DeleteFile(int fileID)
+        public async void DeleteFile(int fileID)
         {
             try
             {
-                if (httpService.DeleteFileAsync(fileID).Result)
+                var fileInfo = await httpService.GetFileAttributesAsync(fileID);
+
+                if (await httpService.DeleteFileAsync(fileID))
                 {
+                    totalFilesSize -= fileInfo.Size;
+                    Files.Remove(fileID);
+                    UpdateFilesList?.Invoke();
+
                     MessageBox.Show("File was deleted successfully");
                 }
                 else
@@ -102,11 +121,11 @@ namespace Client
             }
         }
 
-        public void GetFileInfo(int fileID)
+        public async void GetFileInfo(int fileID)
         {
             try
             {
-                Http.FileAttributes attributes = httpService.GetFileAttributesAsync(fileID).Result;
+                Http.FileAttributes attributes = await httpService.GetFileAttributesAsync(fileID);
 
                 if (attributes != null)
                 {
@@ -123,13 +142,13 @@ namespace Client
             }
         }
 
-        public void DownloadFile(string path, int fileID)
+        public async void DownloadFile(string path, int fileID)
         {
             try
             {
                 using (var fs = new FileStream(path, FileMode.Create))
                 {
-                    Stream fileStream = httpService.GetFileAsync(fileID).Result;
+                    Stream fileStream = await httpService.GetFileAsync(fileID);
 
                     if (fileStream != null)
                     {

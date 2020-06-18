@@ -42,7 +42,7 @@ namespace Client.Http
                         string fileName = Path.GetFileNameWithoutExtension(path);
                         string extension = Path.GetExtension(path);
 
-                        request = SERVER_URI + "?filename=" + fileName + "_" + duplicateNumber + "." + extension + "&userid=" + userID.ToString();
+                        request = SERVER_URI + "?filename=" + fileName + "_" + duplicateNumber   + extension + "&userid=" + userID.ToString();
                     }
 
                     duplicateNumber++;

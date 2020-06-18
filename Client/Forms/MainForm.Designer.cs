@@ -271,6 +271,7 @@
             this.bGetInfo.TabIndex = 22;
             this.bGetInfo.Text = "Get file info";
             this.bGetInfo.UseVisualStyleBackColor = true;
+            this.bGetInfo.Click += new System.EventHandler(this.bGetInfo_Click);
             // 
             // bDeleteFile
             // 
@@ -282,6 +283,7 @@
             this.bDeleteFile.TabIndex = 23;
             this.bDeleteFile.Text = "Delete file";
             this.bDeleteFile.UseVisualStyleBackColor = true;
+            this.bDeleteFile.Click += new System.EventHandler(this.bDeleteFile_Click);
             // 
             // bViewFiles
             // 
@@ -304,6 +306,7 @@
             this.bUploadFile.TabIndex = 25;
             this.bUploadFile.Text = "Upload file";
             this.bUploadFile.UseVisualStyleBackColor = true;
+            this.bUploadFile.Click += new System.EventHandler(this.bUploadFile_Click);
             // 
             // MainForm
             // 

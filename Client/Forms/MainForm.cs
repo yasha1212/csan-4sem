@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Client
     public partial class MainForm : Form
     {
         private ClientService client;
+        private FileAttachmentService fileAttachmentService;
         private List<string> chat;
         private bool isForAll;
 
@@ -22,9 +24,11 @@ namespace Client
         {
             InitializeComponent();
             client = new ClientService();
+            fileAttachmentService = new FileAttachmentService();
             chat = client.GetGlobalChat();
             isForAll = true;
             client.Subscribe(UpdateChatInvoker);
+            fileAttachmentService.SubscribeHandler(UpdateFilesList);
         }
 
         public void UpdateChatInvoker()
@@ -38,7 +42,12 @@ namespace Client
         private void bSend_Click(object sender, EventArgs e)
         {
             client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID);
+
+            fileAttachmentService.Initialize();
             tbMessage.Clear();
+            lbFiles.Items.Clear();
+            bDeleteFile.Enabled = false;
+            bGetInfo.Enabled = false;
         }
 
         private void bConnect_Click(object sender, EventArgs e)
@@ -96,6 +105,7 @@ namespace Client
             cbUsers.Items.Clear();
             lbNotifications.Items.Clear();
             tbID.Text = client.UserID.ToString();
+            fileAttachmentService.SetID(client.UserID);
 
             foreach (var id in client.UserNames.Keys)
             {
@@ -118,10 +128,13 @@ namespace Client
             isForAll = true;
             client.Stop();
 
+            fileAttachmentService.Initialize();
+
             tbAdress.Clear();
             tbPort.Clear();
             tbMessage.Clear();
             tbID.Clear();
+            lbFiles.Items.Clear();
             tbID.Enabled = false;
             tbUserName.Enabled = false;
             rbPrivate.Enabled = false;
@@ -199,7 +212,12 @@ namespace Client
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
                 client.SendMessage(tbMessage.Text, isForAll, client.ReceiverID);
+
+                fileAttachmentService.Initialize();
                 tbMessage.Clear();
+                lbFiles.Items.Clear();
+                bDeleteFile.Enabled = false;
+                bGetInfo.Enabled = false;
             }
         }
 
@@ -247,7 +265,39 @@ namespace Client
         {
             lbFiles.Items.Clear();
 
-            // ДОБАВИТЬ СЕРВИС ПРИКРЕПЛЕНИЯ ФАЙЛОВ И ОБРАБОТЧИК ОБНОВЛЕНИЯ СПИСКА ФАЙЛОВ + НАЖАТИЯ КНОПОК
+            foreach (var fileID in fileAttachmentService.Files.Keys)
+            {
+                lbFiles.Items.Add(fileAttachmentService.Files[fileID] + " (" + fileID.ToString() + ")");
+            }
+        }
+
+        private void bUploadFile_Click(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.ShowDialog();
+            string path = openFileDialog.FileName;
+
+            fileAttachmentService.UploadFile(path);
+        }
+
+        private void bDeleteFile_Click(object sender, EventArgs e)
+        {
+            if (lbFiles.SelectedIndex != -1)
+            {
+                int fileID = IDExtractor.GetIDFromString(lbFiles.SelectedItem.ToString());
+
+                fileAttachmentService.DeleteFile(fileID);
+            }
+        }
+
+        private void bGetInfo_Click(object sender, EventArgs e)
+        {
+            if (lbFiles.SelectedIndex != -1)
+            {
+                int fileID = IDExtractor.GetIDFromString(lbFiles.SelectedItem.ToString());
+
+                fileAttachmentService.GetFileInfo(fileID);
+            }
         }
     }
 }
