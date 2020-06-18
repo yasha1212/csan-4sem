@@ -1,4 +1,5 @@
-﻿using Client.Http;
+﻿using Client.Forms;
+using Client.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -317,17 +318,12 @@ namespace Client
             }
         }
 
-        private async void bViewFiles_Click(object sender, EventArgs e)
+        private void bViewFiles_Click(object sender, EventArgs e)
         {
-            string files = "";
+            List<int> files = chat[lbChat.SelectedIndex].AttachedFiles;
 
-            foreach (var fileID in chat[lbChat.SelectedIndex].AttachedFiles)
-            {
-                var attributes = await fileAttachmentService.GetFileInfo(fileID);
-                files += attributes.Name + ";\n";
-            }
-
-            MessageBox.Show(files);
+            var viewForm = new MessageFilesForm(files);
+            viewForm.ShowDialog();
         }
     }
 }

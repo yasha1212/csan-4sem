@@ -155,6 +155,8 @@ namespace Client
                     if (fileStream != null)
                     {
                         fileStream.CopyTo(fs);
+
+                        MessageBox.Show("File has been successfully downloaded");
                     }
                     else
                     {
