@@ -67,7 +67,7 @@ namespace Client.Http
 
         public async Task<Stream> GetFileAsync(int fileID)
         {
-            string request = SERVER_URI + "?fileid=" + fileID.ToString() + "&resourcetype=file";
+            string request = SERVER_URI + "?fileid=" + fileID.ToString();
 
             var response = await httpClient.GetAsync(request);
 
@@ -83,9 +83,9 @@ namespace Client.Http
 
         public async Task<FileAttributes> GetFileAttributesAsync(int fileID)
         {
-            string request = SERVER_URI + "?fileid=" + fileID.ToString() + "&resourcetype=attributes";
+            var request = new HttpRequestMessage(HttpMethod.Head, SERVER_URI + "?fileid=" + fileID.ToString());
 
-            var response = await httpClient.GetAsync(request);
+            var response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {

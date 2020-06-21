@@ -78,6 +78,7 @@
             this.Controls.Add(this.bGetInfo);
             this.Controls.Add(this.lbFiles);
             this.Name = "MessageFilesForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MessageFilesForm";
             this.ResumeLayout(false);
 
