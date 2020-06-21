@@ -45,17 +45,10 @@ namespace FileStorage
             switch (context.Request.HttpMethod)
             {
                 case "GET":
-                    var resourceType = context.Request.QueryString.Get("resourcetype");
-                    
-                    if (resourceType == "file")
-                    {
-                        GetFile(context);
-                    }
-                    else
-                    {
-                        GetFileAttributes(context);
-                    }
-
+                    GetFile(context);
+                    break;
+                case "HEAD":
+                    GetFileAttributes(context);
                     break;
                 case "POST":
                     AddFile(context);
